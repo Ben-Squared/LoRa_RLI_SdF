@@ -18,7 +18,7 @@ extern SX1272status currentstate;
 // Déclaration variables globales
 ///////////////////////////////////////////////////////////////
 static char LgMsg = 0;
-static char Message[] = "Salut Francis, comment vas-tu ?";
+static char Message[] = "Salut tonton, ça farte ?";
 static float waitPeriod = 0; //en ms
 static int cp = 0;  //compteur de paquets transmis
 static int type_modulation=TypeModulation;
