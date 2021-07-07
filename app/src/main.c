@@ -1,8 +1,8 @@
 /*
  * main.c
  *
- *  Created on: 23 ao�t 2021
- *      Author: Arnaud ft BBT
+ *  Created on: 23 ao�t 2020
+ *      Author: Arnaud
  */
 
 #include "main.h"
