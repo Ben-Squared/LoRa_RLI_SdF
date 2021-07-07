@@ -44,7 +44,7 @@
 
 *.project
 *.cproject
-
+*.launch
 .settings/
 .settings\
 Debug/
