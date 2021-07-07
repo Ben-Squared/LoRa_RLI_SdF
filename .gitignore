@@ -42,6 +42,19 @@
 *.idb
 *.pdb
 
+*.project
+*.cproject
+
+.settings/
+.settings\
+Debug/
+Debug\
+
+.settings/*
+.settings\*
+Debug/*
+Debug\*
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
