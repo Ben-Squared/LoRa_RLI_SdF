@@ -15,8 +15,6 @@ typedef enum {
 	// etc...
 }StateEnum;
 
-#endif /* APP_INC_S_MEF_H_ */
-
 /**
   * @brief  function for initializing the system
   * @param  None
@@ -30,3 +28,7 @@ void S_System_Init(void);
   * @retval None
   */
 void S_Mef(void);
+
+#endif /* APP_INC_S_MEF_H_ */
+
+
