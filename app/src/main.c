@@ -11,6 +11,7 @@
 #include "comSX1272.h"
 #include "SX1272.h"
 #include "appSX1272.h"
+#include "s_mef.h"
 
 static void SystemClock_Config();
 
@@ -38,6 +39,7 @@ int main()
 
 	while(1)
 	{
+		S_Mef(); // do nothing for the moment
 		curtime=BSP_millis();
 
 		if((curtime%1000)==0)//send every 1000ms
