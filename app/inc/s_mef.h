@@ -10,9 +10,11 @@
 
 typedef enum {
 	State_init,
-	State_1,
-	State_2,
-	// etc...
+	State_Idle,
+	State_Frame_Decode,
+	State_Send_No_Request,
+	State_Send_Slave_Request,
+	State_Send_Data,
 }StateEnum;
 
 /**

@@ -19,11 +19,20 @@ void S_Mef(void)
 	case State_init:
 		break;
 
-	case State_1:
+	case State_Idle:
 		break;
 
-	case State_2:
+	case State_Frame_Decode:
+		/* switch case cf diagram*/
 		break;
-	// etc...
+
+	case State_Send_No_Request:
+		break;
+
+	case State_Send_Slave_Request:
+		break;
+
+	case State_Send_Data:
+		break;
 	}
 }
