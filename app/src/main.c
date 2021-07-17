@@ -35,15 +35,18 @@ int main()
 	///////////////////////////////////////////
 	//setup SX1272
 	APP_SX1272_setup();
+	M_system_state_setup();
 
 	while(1)
 	{
 		curtime=BSP_millis();
 
-		if((curtime%1000)==0)//send every 1000ms
+		if((curtime%500)==0)//send every 1000ms
 		{
-			APP_SX1272_runTransmit();
+			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
+
+			M_system_state_main();
 			i++;
 		}
 	}
