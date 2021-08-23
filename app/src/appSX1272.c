@@ -234,5 +234,5 @@ void APP_SX1272_runReceive()
       //my_printf("%d\r\n",currentstate._RSSI);
     }
   }
-  BSP_DELAY_ms(1000);
+  //BSP_DELAY_ms(1000);
 }

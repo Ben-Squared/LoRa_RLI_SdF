@@ -19,6 +19,8 @@ int main()
 	uint32_t curtime=0;
 	uint32_t i=0;
 
+	char Tab[30] = "";
+
 	// Initialize System clock to 48MHz from external clock
 	SystemClock_Config();
 	// Initialize timebase
@@ -41,12 +43,12 @@ int main()
 	{
 		curtime=BSP_millis();
 
-		if((curtime%500)==0)//send every 1000ms
+		if((curtime%100)==0)//send every 1000ms
 		{
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
 
-			M_system_state_main();
+			M_system_state_main(Tab);
 			i++;
 		}
 	}

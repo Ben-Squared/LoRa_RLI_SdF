@@ -30,32 +30,34 @@ static uint8_t ConfigOK = 1;
 ///////////////////////////////////////////////////////////////
 // Main function
 ///////////////////////////////////////////////////////////////
-void M_system_state_main()
+void M_system_state_main(char Tab[30])
 {
 	enum {Station_1, Station_2, Station_3};
 	char etat = Station_1;
 	char Retour = "";
 
+	M_Receive(Tab);
+
 	//while (1) {
-	switch (etat) {
+	/*switch (etat) {
 	case 0: 	M_Transmit("Station_1 est-tu la ?");
 				//Retour = M_Receive();
 				//if (Retour == "") etat = Station_2; break;
-				BSP_DELAY_ms(100);
+				//BSP_DELAY_ms(100);
 				etat = Station_2; //break;
 
 	case 1: 	M_Transmit("Station_2 est-tu la ?");
 				//Retour = M_Receive();
 				//if (Retour == "") etat = Station_3; break;
-				BSP_DELAY_ms(100);
+				//BSP_DELAY_ms(100);
 				etat = Station_3; //break;
 
 	case 2: 	M_Transmit("Station_3 est-tu la ?");
 				//Retour = M_Receive();
 				//if (Retour == "") etat = Station_1; break;
-				BSP_DELAY_ms(100);
+				//BSP_DELAY_ms(100);
 				etat = Station_1; //break;
-		}
+		}*/
 	//}
 
 }
@@ -187,34 +189,51 @@ void M_Transmit(Message)
     {
       my_printf("\n Transmission problem !\r\n");
     }
-    BSP_DELAY_ms(waitPeriod); //delay to send packet every PeriodTransmission
+    //BSP_DELAY_ms(waitPeriod); //delay to send packet every PeriodTransmission
   }
 }
 
-void M_Receive(void)
+void M_Receive(char Tab[30])
 {
-  char Message_receive[] = "";
+  //char Message_receive[30] = "";
+
+  my_printf(Tab);
 
   //////////////////////////////////////////////////////////////////////////////////
   // Receive packets continuously
   if (ConfigOK == 1)
   {
-	//affichage entête
-	//statut (correct = 1 or bad = 0 or non received = 2)
-	my_printf("\n \r\n");
-	my_printf("Received data \r\n");
-	my_printf("\n \r\n");
+	  e = BSP_SX1272_receivePacketTimeout(WaitRxMax);
+	  //paquet reçu, correct ou non
+	  if (e == 0)
+	  {
+		if (currentstate._reception == CORRECT_PACKET)
+		{
+			my_printf("\n \r\n");
+			my_printf("Received data \r\n");
 
-	//////////////////////////////////////////////////////////////////////////////////
-	// Plot receive packets in the serial monitor
-	for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
-	{
-	  my_printf("%c",currentstate.packet_received.data[i]);
-	  my_printf(" ");
-	  Message_receive[i] = currentstate.packet_received.data[i];
-	}
+			//////////////////////////////////////////////////////////////////////////////////
+			// Plot receive packets in the serial monitor
+			//for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
+			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
+			{
+			  my_printf("%c",currentstate.packet_received.data[i]);
+			}
+
+			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
+			{
+			  Tab[i] = currentstate.packet_received.data[i];
+			}
+
+			my_printf("\r\n");
+			my_printf("Message : %s \r\n", Tab);
+			my_printf("Packet number %d \r\n", currentstate.packet_received.packnum);
+			my_printf("Length %d \r\n",currentstate.packet_received.length);
+		}
+	  }
+
+
   }
-  BSP_DELAY_ms(1000);
 
-  return Message_receive;
+  //BSP_DELAY_ms(1000);
 }
