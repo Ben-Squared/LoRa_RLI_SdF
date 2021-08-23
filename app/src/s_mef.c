@@ -16,23 +16,23 @@ void S_Mef(void)
 	/* probably some initialization */
 	switch(mefState){
 
-	case State_init:
+	case StateInit:
 		break;
 
-	case State_Idle:
+	case StateIdle:
 		break;
 
-	case State_Frame_Decode:
+	case StateFrameDecode:
 		/* switch case cf diagram*/
 		break;
 
-	case State_Send_No_Request:
+	case StateSendNoRequest:
 		break;
 
-	case State_Send_Slave_Request:
+	case StateSendSlaveRequest:
 		break;
 
-	case State_Send_Data:
+	case StateSendData:
 		break;
 	}
 }
