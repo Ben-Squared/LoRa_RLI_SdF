@@ -2,7 +2,7 @@
  * M_system_state.c
  *
  *  Created on: 16 juil. 2021
- *      Author: Jérémy
+ *      Author: Jï¿½rï¿½my/Benoit
  */
 
 #include "main.h"
@@ -11,17 +11,22 @@
 #include "comSX1272.h"
 #include "string.h"
 #include "delay.h"
+#include "m_systame_state.h"
+
 
 extern SX1272status currentstate;
 
 ///////////////////////////////////////////////////////////////
-// Déclaration variables globales
+// Dï¿½claration variables globales
 ///////////////////////////////////////////////////////////////
 static float waitPeriod = 0; //en ms
 static int cp = 0;  //compteur de paquets transmis
 static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
+char Tab[30] = "";
+
+StateEnum mefState;
 
 // status variables
 static int8_t e;
@@ -30,39 +35,41 @@ static uint8_t ConfigOK = 1;
 ///////////////////////////////////////////////////////////////
 // Main function
 ///////////////////////////////////////////////////////////////
-void M_system_state_main(char Tab[30])
+void M_System_State(void)
 {
-	enum {Station_1, Station_2, Station_3};
-	char etat = Station_1;
-	char Retour = "";
+	switch(mefState)
+	{
+		case stateInit:
+			M_System_State_Setup();
+			mefState = stateIdle;
+			break;
 
-	M_Receive(Tab);
+		case stateIdle:
+			// wait for periodic interrupt
+			break;
 
-	//while (1) {
-	/*switch (etat) {
-	case 0: 	M_Transmit("Station_1 est-tu la ?");
-				//Retour = M_Receive();
-				//if (Retour == "") etat = Station_2; break;
-				//BSP_DELAY_ms(100);
-				etat = Station_2; //break;
+		case stateSendSlaveInquiry:
+			// kikou mettre du code ici
+			mefState = stateWaitForResponse;
+			break;
 
-	case 1: 	M_Transmit("Station_2 est-tu la ?");
-				//Retour = M_Receive();
-				//if (Retour == "") etat = Station_3; break;
-				//BSP_DELAY_ms(100);
-				etat = Station_3; //break;
+		case stateWaitForResponse:
+			/* just wait */
+			break;
 
-	case 2: 	M_Transmit("Station_3 est-tu la ?");
-				//Retour = M_Receive();
-				//if (Retour == "") etat = Station_1; break;
-				//BSP_DELAY_ms(100);
-				etat = Station_1; //break;
-		}*/
-	//}
+		case stateFrameDecode:
+			/* if noRequest and other station to ask : mefState = stateSendSlaveInquiry, else if no station left : mefState = stateIdle */
+			break;
 
+		case stateSendBroadcastOrder:
+			break;
+
+		default:
+			break;
+	}
 }
 
-void M_system_state_setup()
+void M_System_State_Setup()
 {
   // Power ON the module
   e = BSP_SX1272_ON(type_modulation);
@@ -105,7 +112,7 @@ void M_system_state_setup()
   if (ConfigOK == 1)
   {
 	//////////////////////////////////////////////////////////////////////
-  //config supplémentaire mode LORA
+  //config supplï¿½mentaire mode LORA
 	//////////////////////////////////////////////////////////////////////
     if(type_modulation==0)
     {
@@ -125,7 +132,7 @@ void M_system_state_setup()
       currentstate._maxRetries = MaxNbRetries;
     }
 	//////////////////////////////////////////////////////////////////////
-	//config supplémentaire mode FSK
+	//config supplï¿½mentaire mode FSK
 	//////////////////////////////////////////////////////////////////////
     else
     {
@@ -163,7 +170,7 @@ void M_system_state_setup()
 }
 
 //void M_Transmit(const char* Message)
-void M_Transmit(Message)
+void M_Transmit(Message) // TODO : mettre un type Ã  Message
 {
   uint8_t dest_address = TX_Addr;
 
@@ -193,7 +200,7 @@ void M_Transmit(Message)
   }
 }
 
-void M_Receive(char Tab[30])
+void M_Receive(void)
 {
   //char Message_receive[30] = "";
 
@@ -204,7 +211,7 @@ void M_Receive(char Tab[30])
   if (ConfigOK == 1)
   {
 	  e = BSP_SX1272_receivePacketTimeout(WaitRxMax);
-	  //paquet reçu, correct ou non
+	  //paquet reï¿½u, correct ou non
 	  if (e == 0)
 	  {
 		if (currentstate._reception == CORRECT_PACKET)

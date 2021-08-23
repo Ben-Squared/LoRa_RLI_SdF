@@ -5,10 +5,11 @@
  *      Author: benoit
  */
 
-#ifndef APP_INC_M_MEF_H_
-#define APP_INC_M_MEF_H_
+#ifndef APP_INC_M_SYSTAME_STATE_H_
+#define APP_INC_M_SYSTAME_STATE_H_
 
 #include <stdint.h>
+#include "frame.h"
 
 typedef enum {
 	stateInit,
@@ -25,16 +26,16 @@ typedef enum {
   * @param  None
   * @retval None
   */
-void M_System_Init(void);
+void M_System_State_Setup(void);
 
 /**
   * @brief  Finite State Machine handler
   * @param  None
   * @retval None
   */
-void M_Mef(void);
+void M_System_State(void);
 
 
-#endif /* APP_INC_M_MEF_H_ */
+#endif /* APP_INC_M_SYSTAME_STATE_H_ */
 
 

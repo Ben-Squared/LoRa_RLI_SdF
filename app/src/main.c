@@ -11,6 +11,7 @@
 #include "comSX1272.h"
 #include "SX1272.h"
 #include "appSX1272.h"
+#include "m_systame_state.h"
 
 static void SystemClock_Config();
 
@@ -18,8 +19,6 @@ int main()
 {
 	uint32_t curtime=0;
 	uint32_t i=0;
-
-	char Tab[30] = "";
 
 	// Initialize System clock to 48MHz from external clock
 	SystemClock_Config();
@@ -37,7 +36,7 @@ int main()
 	///////////////////////////////////////////
 	//setup SX1272
 	APP_SX1272_setup();
-	M_system_state_setup();
+	M_System_State_Setup();
 
 	while(1)
 	{
@@ -48,7 +47,7 @@ int main()
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
 
-			M_system_state_main(Tab);
+			M_System_State();
 			i++;
 		}
 	}
