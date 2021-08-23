@@ -6,15 +6,16 @@
  */
 
 
-#include "m_frame.h"
+#include <frame.h>
 
 frameTypeEnum frameType;
 
-void M_Frame_Format(frameTypeEnum frameType)
+void Frame_Format(frameTypeEnum frameType)
 {
 	/* probably some initialization */
 	switch(frameType)
 	{
+#ifdef MASTER
 		case frameSlaveInquiry:
 			//kikou mettre du code ici
 			break;
@@ -22,7 +23,9 @@ void M_Frame_Format(frameTypeEnum frameType)
 		case frameBroadcastOrder:
 			//kikou mettre du code ici
 			break;
+#endif
 
+#ifdef SLAVE
 		case frameSlaveRequest:
 			// nothing to do
 			break;
@@ -34,6 +37,7 @@ void M_Frame_Format(frameTypeEnum frameType)
 		case frameNoRequest:
 			//nothing to do
 			break;
+#endif
 
 		default:
 			break;

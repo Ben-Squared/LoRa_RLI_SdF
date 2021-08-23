@@ -5,10 +5,11 @@
  *      Author: benoit
  */
 
-#ifndef APP_INC_M_FRAME_H_
-#define APP_INC_M_FRAME_H_
+#ifndef APP_INC_FRAME_H_
+#define APP_INC_FRAME_H_
 
 #include <stdint.h>
+
 
 typedef enum {
 	frameSlaveInquiry,
@@ -31,6 +32,6 @@ typedef struct {
   * @param  frameType : {frameSlaveInquiry, frameBroadcastOrder}
   * @retval None
   */
-void M_Frame_Format(frameTypeEnum frameType);
+void Frame_Format(frameTypeEnum frameType);
 
-#endif /* APP_INC_M_FRAME_H_ */
+#endif /* APP_INC_FRAME_H_ */
