@@ -10,15 +10,17 @@
 
 frameTypeEnum frameType;
 
-void S_Frame_Format(void)
+void S_Frame_Format(frameTypeEnum frameType)
 {
 	/* probably some initialization */
 	switch(frameType){
 
 	case frameSlaveInquiry:
+		// nothing to do
 		break;
 
 	case frameBroadcastOrder:
+		// nothing to do
 		break;
 
 	case frameSlaveRequest:

@@ -24,6 +24,12 @@ typedef struct {
 	uint16_t data;					// data to send
 } frameField;
 
-void S_Frame_Format(void);
+
+/**
+  * @brief  function for formatting frame according to frameType
+  * @param  frameType : {frameSlaveRequest, frameSlaveData, frameNoRequest}
+  * @retval None
+  */
+void S_Frame_Format(frameTypeEnum frameType);
 
 #endif /* APP_INC_S_FRAME_H_ */

@@ -5,34 +5,45 @@
  *      Author: benoit
  */
 
-
+/*********** defines ***************/
 #include "s_mef.h"
 
+
+/************* Variables *************/
 StateEnum mefState;
 
+/************ functions **************/
+
+
+void S_System_Init(void)
+{
+	// kikou mettre du code ici
+}
 
 void S_Mef(void)
 {
 	/* probably some initialization */
 	switch(mefState){
 
-	case StateInit:
+	case stateInit:
+		S_System_Init();
+		mefState = stateIdle;
 		break;
 
-	case StateIdle:
+	case stateIdle:
 		break;
 
-	case StateFrameDecode:
+	case stateFrameDecode:
 		/* switch case cf diagram*/
 		break;
 
-	case StateSendNoRequest:
+	case stateSendNoRequest:
 		break;
 
-	case StateSendSlaveRequest:
+	case stateSendSlaveRequest:
 		break;
 
-	case StateSendData:
+	case stateSendData:
 		break;
 	}
 }

@@ -11,12 +11,12 @@
 #include <stdint.h>
 
 typedef enum {
-	StateInit,
-	StateIdle,
-	StateFrameDecode,
-	StateSendNoRequest,
-	StateSendSlaveRequest,
-	StateSendData,
+	stateInit,
+	stateIdle,
+	stateFrameDecode,
+	stateSendNoRequest,
+	stateSendSlaveRequest,
+	stateSendData,
 }StateEnum;
 
 /**
