@@ -8,11 +8,15 @@
 #ifndef APP_INC_M_MEF_H_
 #define APP_INC_M_MEF_H_
 
+#include <stdint.h>
+
 typedef enum {
-	State_init,
-	State_1,
-	State_2,
-	// etc...
+	stateInit,
+	stateIdle,
+	stateSendSlaveInquiry,
+	stateWaitForResponse,
+	stateFrameDecode,
+	stateSendBroadcastOrder
 }StateEnum;
 
 

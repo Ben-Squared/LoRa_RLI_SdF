@@ -5,25 +5,50 @@
  *      Author: benoit
  */
 
+/*************** defines ****************/
 
 #include "m_mef.h"
 
+
+/****** Variables ***********/
 StateEnum mefState;
 
+/********** fonctions declarations ***************/
+void M_System_Init(void)
+{
+	// kikou, mettre du code ici
+}
 
 void M_Mef(void)
 {
-	/* probably some initialization */
-	switch(mefState){
+	switch(mefState)
+	{
+		case stateInit:
+			M_System_Init();
+			mefState = stateIdle;
+			break;
 
-	case State_init:
-		break;
+		case stateIdle:
+			// wait for periodic interrupt
+			break;
 
-	case State_1:
-		break;
+		case stateSendSlaveInquiry:
+			// kikou mettre du code ici
+			mefState = stateWaitForResponse;
+			break;
 
-	case State_2:
-		break;
-	// etc...
+		case stateWaitForResponse:
+			/* just wait */
+			break;
+
+		case stateFrameDecode:
+			/* if noRequest and other station to ask : mefState = stateSendSlaveInquiry, else if no station left : mefState = stateIdle */
+			break;
+
+		case stateSendBroadcastOrder:
+			break;
+
+		default:
+			break;
 	}
 }
