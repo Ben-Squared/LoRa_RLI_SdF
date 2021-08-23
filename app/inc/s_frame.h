@@ -6,8 +6,9 @@
  */
 
 #ifndef APP_INC_S_FRAME_H_
-
 #define APP_INC_S_FRAME_H_
+
+#include <stdint.h>
 
 typedef enum {
 	frameSlaveInquiry,
@@ -15,14 +16,14 @@ typedef enum {
 	frameSlaveRequest,
 	frameSlaveData,
 	frameNoRequest
-}frame_type_enum;
+}frameTypeEnum;
 
 typedef struct {
 	uint8_t idCalled; 				// id of expected receiver
-	frame_type_enum frameType; 		// type of frame
+	frameTypeEnum frameType; 		// type of frame
 	uint16_t data;					// data to send
 } frameField;
 
-void S_FrameFormat(void);
+void S_Frame_Format(void);
 
 #endif /* APP_INC_S_FRAME_H_ */

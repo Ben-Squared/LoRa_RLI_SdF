@@ -8,12 +8,12 @@
 
 #include "s_frame.h"
 
-frame_type_enum SFrame;
+frameTypeEnum frameType;
 
-void S_FrameFormat(void)
+void S_Frame_Format(void)
 {
 	/* probably some initialization */
-	switch(SFrame){
+	switch(frameType){
 
 	case frameSlaveInquiry:
 		break;

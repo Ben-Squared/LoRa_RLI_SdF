@@ -8,6 +8,8 @@
 #ifndef APP_INC_S_MEF_H_
 #define APP_INC_S_MEF_H_
 
+#include <stdint.h>
+
 typedef enum {
 	StateInit,
 	StateIdle,
