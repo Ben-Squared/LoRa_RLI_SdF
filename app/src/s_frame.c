@@ -31,5 +31,7 @@ void S_FrameFormat(void)
 	case frameNoRequest:
 		break;
 
+	default:
+		break;
 	}
 }
