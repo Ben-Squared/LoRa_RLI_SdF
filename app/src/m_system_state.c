@@ -236,9 +236,6 @@ void M_Transmit(Message) // TODO : mettre un type à Message
 
 void M_Receive(void)
 {
-  //char Message_receive[30] = "";
-
-  my_printf(Tab);
 
   //////////////////////////////////////////////////////////////////////////////////
   // Receive packets continuously
@@ -272,9 +269,6 @@ void M_Receive(void)
 			my_printf("Length %d \r\n",currentstate.packet_received.length);
 		}
 	  }
-
-
   }
-
   //BSP_DELAY_ms(1000);
 }

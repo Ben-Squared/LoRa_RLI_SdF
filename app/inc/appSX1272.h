@@ -36,7 +36,7 @@
 #define freq_centrale CH_868v3
 #define MaxNbRetries 3
 #define WaitTxMax 5000 //en ms
-#define WaitRxMax 10000 //en ms
+#define WaitRxMax 1500 //en ms
 
 void APP_SX1272_setup();
 void APP_SX1272_runTransmit();

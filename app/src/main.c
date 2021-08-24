@@ -52,6 +52,7 @@ int main()
 //			M_System_State();
 
 			M_system_state_main(Tab);
+			my_printf("main \r\n");
 			i++;
 		}
 	}
