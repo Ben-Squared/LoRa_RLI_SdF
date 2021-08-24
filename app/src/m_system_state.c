@@ -25,6 +25,7 @@ static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 char Tab[30] = "";
+char Message[30] = "";
 
 StateEnum mefState;
 
@@ -46,15 +47,26 @@ void M_System_State(void)
 
 		case stateIdle:
 			// wait for periodic interrupt
+			mefState = stateSendSlaveInquiry;
 			break;
 
 		case stateSendSlaveInquiry:
 			// kikou mettre du code ici
+
+			M_Transmit("This message is for Slave1");
+
+			// clear Tab[]
 			mefState = stateWaitForResponse;
 			break;
 
 		case stateWaitForResponse:
-			/* just wait */
+			// receive()
+			if (Tab[30] != "")
+			{
+					mefState = stateFrameDecode;
+			}
+			//else if (timeout ?)
+			//{retry--; mefState = stateSendSlaveInquiry}
 			break;
 
 		case stateFrameDecode:
@@ -170,7 +182,7 @@ void M_System_State_Setup()
 }
 
 //void M_Transmit(const char* Message)
-void M_Transmit(Message) // TODO : mettre un type à Message
+void M_Transmit(char* Message) // TODO : mettre un type à Message
 {
   uint8_t dest_address = TX_Addr;
 
@@ -185,10 +197,10 @@ void M_Transmit(Message) // TODO : mettre un type à Message
     {
       my_printf("\n Packet number ");
       my_printf("%d",cp);
-	  my_printf(" ;Rx node address ");
+	  my_printf(" ; Broadcast address ");
 	  my_printf("%d\r",dest_address);
 
-	  my_printf("\n Message ");
+	  my_printf("\n Message sent : ");
 	  my_printf("%s\r\n",Message);
       cp++;
     }
@@ -211,7 +223,7 @@ void M_Receive(void)
   if (ConfigOK == 1)
   {
 	  e = BSP_SX1272_receivePacketTimeout(WaitRxMax);
-	  //paquet re�u, correct ou non
+	  //paquet recu, correct ou non
 	  if (e == 0)
 	  {
 		if (currentstate._reception == CORRECT_PACKET)

@@ -5,6 +5,10 @@
  *      Author: benoit
  */
 
+//////////////////////Definition MAITRE / ESCLAVE ///////////// commenter celui qui ne doit pas etre implémenté sur la carte
+#define MASTER
+//#define SLAVE
+
 #ifndef APP_INC_FRAME_H_
 #define APP_INC_FRAME_H_
 
