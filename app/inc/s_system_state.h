@@ -24,14 +24,14 @@ typedef enum {
   * @param  None
   * @retval None
   */
-void S_System_Init(void);
+void S_System_State_Setup(void);
 
 /**
   * @brief  Finite State Machine handler
   * @param  None
   * @retval None
   */
-void S_Mef(void);
+void S_System_State(void);
 
 #endif /* APP_INC_S_SYSTEM_STATE_H_ */
 
