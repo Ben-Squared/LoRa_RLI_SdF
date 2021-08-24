@@ -5,13 +5,13 @@
  *      Author: Arnaud
  */
 
+#include <s_system_state.h>
 #include "main.h"
 #include "stm32f0xx.h"
 #include "bsp.h"
 #include "comSX1272.h"
 #include "SX1272.h"
 #include "appSX1272.h"
-#include "s_mef.h"
 
 static void SystemClock_Config();
 

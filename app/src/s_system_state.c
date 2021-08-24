@@ -1,4 +1,4 @@
-/*
+ /*
  * s_mef.c
  *
  *  Created on: 16 juil. 2021
@@ -6,7 +6,7 @@
  */
 
 /*********** defines ***************/
-#include "s_mef.h"
+#include <s_system_state.h>
 
 
 /************* Variables *************/

@@ -5,8 +5,8 @@
  *      Author: benoit
  */
 
-#ifndef APP_INC_S_MEF_H_
-#define APP_INC_S_MEF_H_
+#ifndef APP_INC_S_SYSTEM_STATE_H_
+#define APP_INC_S_SYSTEM_STATE_H_
 
 #include <stdint.h>
 
@@ -33,6 +33,6 @@ void S_System_Init(void);
   */
 void S_Mef(void);
 
-#endif /* APP_INC_S_MEF_H_ */
+#endif /* APP_INC_S_SYSTEM_STATE_H_ */
 
 
