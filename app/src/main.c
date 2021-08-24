@@ -39,7 +39,7 @@ int main()
 
 	while(1)
 	{
-		S_Mef(); // do nothing for the moment
+		S_System_State(); // do nothing for the moment
 		curtime=BSP_millis();
 
 		if((curtime%1000)==0)//send every 1000ms

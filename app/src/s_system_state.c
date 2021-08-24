@@ -40,7 +40,7 @@ void S_System_State(void)
 	switch(mefState){
 
 	case stateInit:
-		S_System_Init();
+		S_System_State_Setup();
 		mefState = stateIdle;
 		break;
 
