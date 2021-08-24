@@ -26,7 +26,7 @@ static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
 
-//char Tab[30] = "";
+char Tab[30] = "";
 
 StateEnum mefState;
 
