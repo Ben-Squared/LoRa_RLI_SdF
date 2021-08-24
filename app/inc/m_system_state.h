@@ -5,8 +5,8 @@
  *      Author: benoit
  */
 
-#ifndef APP_INC_M_SYSTAME_STATE_H_
-#define APP_INC_M_SYSTAME_STATE_H_
+#ifndef APP_INC_M_SYSTEM_STATE_H_
+#define APP_INC_M_SYSTEM_STATE_H_
 
 #include <stdint.h>
 #include "frame.h"
@@ -36,6 +36,6 @@ void M_System_State_Setup(void);
 void M_System_State(void);
 
 
-#endif /* APP_INC_M_SYSTAME_STATE_H_ */
+#endif /* APP_INC_M_SYSTEM_STATE_H_ */
 
 
