@@ -5,15 +5,17 @@
  *      Author: Arnaud
  */
 
+#include <m_system_state.h>
 #include "main.h"
 #include "stm32f0xx.h"
 #include "bsp.h"
 #include "comSX1272.h"
 #include "SX1272.h"
 #include "appSX1272.h"
-#include "m_systame_state.h"
 
 static void SystemClock_Config();
+
+char Tab[30] = "";
 
 int main()
 {
@@ -47,7 +49,9 @@ int main()
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
 
-			M_System_State();
+//			M_System_State();
+
+			M_system_state_main(Tab);
 			i++;
 		}
 	}

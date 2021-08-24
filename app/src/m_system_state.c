@@ -5,13 +5,13 @@
  *      Author: J�r�my/Benoit
  */
 
+#include <m_system_state.h>
 #include "main.h"
 #include "appSX1272.h"
 #include "SX1272.h"
 #include "comSX1272.h"
 #include "string.h"
 #include "delay.h"
-#include "m_systame_state.h"
 
 
 extern SX1272status currentstate;
@@ -24,7 +24,8 @@ static int cp = 0;  //compteur de paquets transmis
 static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
-char Tab[30] = "";
+
+//char Tab[30] = "";
 
 StateEnum mefState;
 
@@ -35,6 +36,39 @@ static uint8_t ConfigOK = 1;
 ///////////////////////////////////////////////////////////////
 // Main function
 ///////////////////////////////////////////////////////////////
+
+void M_system_state_main(char Tab[30])
+{
+	enum {Station_1, Station_2, Station_3};
+	char etat = Station_1;
+	char Retour = "";
+
+	M_Receive(Tab);
+
+	//while (1) {
+	/*switch (etat) {
+	case 0: 	M_Transmit("Station_1 est-tu la ?");
+				//Retour = M_Receive();
+				//if (Retour == "") etat = Station_2; break;
+				//BSP_DELAY_ms(100);
+				etat = Station_2; //break;
+
+	case 1: 	M_Transmit("Station_2 est-tu la ?");
+				//Retour = M_Receive();
+				//if (Retour == "") etat = Station_3; break;
+				//BSP_DELAY_ms(100);
+				etat = Station_3; //break;
+
+	case 2: 	M_Transmit("Station_3 est-tu la ?");
+				//Retour = M_Receive();
+				//if (Retour == "") etat = Station_1; break;
+				//BSP_DELAY_ms(100);
+				etat = Station_1; //break;
+		}*/
+	//}
+
+}
+
 void M_System_State(void)
 {
 	switch(mefState)
