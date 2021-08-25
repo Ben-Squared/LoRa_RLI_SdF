@@ -13,7 +13,6 @@
 #include "string.h"
 #include "delay.h"
 
-
 extern SX1272status currentstate;
 
 ///////////////////////////////////////////////////////////////
@@ -25,14 +24,16 @@ static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-
 char Tab[30] = "";
+
 
 StateEnum mefState;
 
 // status variables
 static int8_t e;
 static uint8_t ConfigOK = 1;
+
+int8_t Retry;
 
 ///////////////////////////////////////////////////////////////
 // Main function
@@ -85,26 +86,38 @@ void M_System_State(void)
 			break;
 
 		case stateSendSlaveInquiry:
-			// kikou mettre du code ici
+			// Clear the receive table before sending the new message
+			memset( Tab, 0, sizeof(Tab) );
+			// Send the request
+			M_Transmit("01 This is a slave inquiry");
 
-			M_Transmit("This message is for Slave1");
-
-			// clear Tab[]
 			mefState = stateWaitForResponse;
 			break;
 
 		case stateWaitForResponse:
-			// receive()
+			// Receive the request answer
+			M_Receive(Tab);
+
 			if (Tab[30] != "")
 			{
-					mefState = stateFrameDecode;
+				mefState = stateFrameDecode;
+				Retry = 10;
 			}
-			//else if (timeout ?)
-			//{retry--; mefState = stateSendSlaveInquiry}
+			else if(Retry > 0)
+			{
+				Retry--;
+				mefState = stateSendSlaveInquiry;
+			}
+			else
+			{
+				my_printf("Answer not receive");
+				mefState = stateIdle;
+			}
 			break;
 
 		case stateFrameDecode:
 			/* if noRequest and other station to ask : mefState = stateSendSlaveInquiry, else if no station left : mefState = stateIdle */
+			mefState = stateIdle;
 			break;
 
 		case stateSendBroadcastOrder:
@@ -117,6 +130,9 @@ void M_System_State(void)
 
 void M_System_State_Setup()
 {
+  // Number of maximum reception loop
+  Retry = 10;
+
   // Power ON the module
   e = BSP_SX1272_ON(type_modulation);
   if (e == 0)

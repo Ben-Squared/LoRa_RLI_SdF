@@ -15,7 +15,7 @@
 
 static void SystemClock_Config();
 
-char Tab[30] = "";
+//char Tab[30] = "";
 
 int main()
 {
@@ -49,9 +49,9 @@ int main()
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
 
-//			M_System_State();
+			M_System_State();
 
-			M_system_state_main(Tab);
+			//M_system_state_main(Tab);
 			my_printf("main \r\n");
 			i++;
 		}
