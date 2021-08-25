@@ -24,8 +24,8 @@ static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-char Tab[30] = "";
-
+char Tab[30];
+char EmptyTab[30];
 
 StateEnum mefState;
 
@@ -98,7 +98,7 @@ void M_System_State(void)
 			// Receive the request answer
 			M_Receive(Tab);
 
-			if (Tab[30] != "")
+			if (strcmp(Tab, EmptyTab) != 0)
 			{
 				mefState = stateFrameDecode;
 				Retry = 10;
@@ -110,7 +110,7 @@ void M_System_State(void)
 			}
 			else
 			{
-				my_printf("Answer not receive");
+				my_printf("Answer not received \n");
 				mefState = stateIdle;
 			}
 			break;

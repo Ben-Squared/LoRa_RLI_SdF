@@ -44,7 +44,7 @@ int main()
 	{
 		curtime=BSP_millis();
 
-		if((curtime%100)==0)//send every 1000ms
+		if((curtime%1000)==0)//send every 1000ms
 		{
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
@@ -52,7 +52,7 @@ int main()
 			M_System_State();
 
 			//M_system_state_main(Tab);
-			my_printf("main \r\n");
+			my_printf("main MASTER \r\n");
 			i++;
 		}
 	}
