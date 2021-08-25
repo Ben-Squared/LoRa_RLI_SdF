@@ -11,6 +11,7 @@
 #include "comSX1272.h"
 #include "SX1272.h"
 #include "appSX1272.h"
+#include "frame.h"
 
 static void SystemClock_Config();
 
@@ -18,6 +19,14 @@ int main()
 {
 	uint32_t curtime=0;
 	uint32_t i=0;
+
+/******* dirty example, to move into slave state machine or master state machine *********/
+	uint8_t idDest = 0x01;
+	frameTypeEnum frameType = frameSlaveInquiry;
+	uint8_t frame[4] = {0};
+	uint8_t Data[2] = {2,2};
+	frameField decodedFrame;
+/**************************/
 
 	// Initialize System clock to 48MHz from external clock
 	SystemClock_Config();
@@ -33,6 +42,36 @@ int main()
 	my_printf("Console ready!\r\n");
 
 	///////////////////////////////////////////
+
+	/****** dirty example for debug ***********/
+	my_printf("frame before formatting : ");
+	for(i=0; i<4; i++)
+	{
+		my_printf("%d,", frame[i]);
+	}
+	my_printf("\n\r");
+
+	Set_Data(Data);
+	Frame_Format(idDest, frameType, frame);
+
+	my_printf("frame formated : ");
+	for(i=0; i<4; i++)
+	{
+		my_printf("%d,", frame[i]);
+	}
+	my_printf("\n\r");
+
+	decodedFrame = Frame_Decode(frame);
+	my_printf("id = %d ", decodedFrame.idCalled);
+	my_printf("frametype = %d ", decodedFrame.frameType);
+	my_printf("data = %d \n\r", decodedFrame.data);
+
+	if(!Frame_Verify(decodedFrame))
+		my_printf("Frame is correct ! \n\r");
+	else
+		my_printf("Frame Error ! ! \n\r");
+/*****************************************************/
+
 	//setup SX1272
 	APP_SX1272_setup();
 
@@ -42,8 +81,9 @@ int main()
 
 		if((curtime%1000)==0)//send every 1000ms
 		{
-			APP_SX1272_runTransmit();
+			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
+
 			i++;
 		}
 	}
