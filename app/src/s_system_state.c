@@ -48,7 +48,7 @@ void S_System_State(void)
 		S_Receive(Tab);
 		if(Tab != "")
 		{
-			my-printf("Slave 01 message received \n");
+			my_printf("Slave 01 message received \n");
 
 			mefState = stateFrameDecode;
 		}
@@ -58,7 +58,7 @@ void S_System_State(void)
 		/* switch case cf diagram*/
 		if (Tab[1] == "1")
 		{
-			S_Transmit("No Request 01 \n");
+			S_Transmit("No Request 01");
 
 			memset(Tab, 0, sizeof(Tab));
 		}

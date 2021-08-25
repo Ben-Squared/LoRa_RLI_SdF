@@ -39,13 +39,16 @@ int main()
 
 	while(1)
 	{
-		S_System_State(); // do nothing for the moment
 		curtime=BSP_millis();
-
 		if((curtime%1000)==0)//send every 1000ms
 		{
-			APP_SX1272_runTransmit();
+			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
+
+			S_System_State();
+
+			//M_system_state_main(Tab);
+			my_printf("main SLAVE \r\n");
 			i++;
 		}
 	}
