@@ -56,17 +56,15 @@ void S_System_State(void)
 		break;
 
 	case stateFrameDecode:
-		/* switch case cf diagram*/
+		/*TODO : switch case cf diagram*/
 		if (Tab[1] == "1")
-		{
-			S_Transmit("No Request 01");
-
-			memset(Tab, 0, sizeof(Tab));
-		}
-		mefState = stateIdle;
+			mefState = stateSendNoRequest;
 		break;
 
 	case stateSendNoRequest:
+		S_Transmit("No Request 01");
+		memset(Tab, 0, sizeof(Tab));
+		mefState = stateIdle;
 		break;
 
 	case stateSendSlaveRequest:
