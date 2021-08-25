@@ -23,7 +23,8 @@ static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-char Tab[30] = "";
+char Tab[30];
+char EmptyTab[30];
 
 StateEnum mefState;
 
@@ -46,7 +47,7 @@ void S_System_State(void)
 
 	case stateIdle:
 		S_Receive(Tab);
-		if(Tab != "")
+		if (strcmp(Tab, EmptyTab) != 0)
 		{
 			my_printf("Slave 01 message received \n");
 
