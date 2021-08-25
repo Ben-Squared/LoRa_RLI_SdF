@@ -36,6 +36,7 @@ int main()
 	///////////////////////////////////////////
 	//setup SX1272
 	APP_SX1272_setup();
+	S_System_State_Setup();
 
 	while(1)
 	{
