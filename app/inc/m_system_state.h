@@ -17,7 +17,8 @@ typedef enum {
 	stateSendSlaveInquiry,
 	stateWaitForResponse,
 	stateFrameDecode,
-	stateSendBroadcastOrder
+	stateSendBroadcastOrder,
+	stateOtherStationLeft
 }StateEnum;
 
 
@@ -35,6 +36,9 @@ void M_System_State_Setup(void);
   */
 void M_System_State(void);
 
+void M_Transmit(char* Message);
+
+void M_Receive(void);
 
 #endif /* APP_INC_M_SYSTEM_STATE_H_ */
 

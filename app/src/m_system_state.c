@@ -24,8 +24,14 @@ static int type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-char Tab[30];
-char EmptyTab[30];
+char Tab[32];
+char EmptyTab[32];
+
+uint8_t myId = 1;
+uint8_t totalStationNumber = 2;
+uint8_t stationNumber = 1;
+uint8_t frame[4] = {0};
+frameField decodedFrame;
 
 StateEnum mefState;
 
@@ -41,9 +47,9 @@ int8_t Retry;
 
 void M_system_state_main(char Tab[30])
 {
-	enum {Station_1, Station_2, Station_3};
-	char etat = Station_1;
-	char Retour = "";
+//	enum {Station_1, Station_2, Station_3};
+//	char etat = Station_1;
+//	char Retour = "";
 
 	M_Receive(Tab);
 
@@ -100,7 +106,8 @@ void M_System_State(void)
 
 			if (strcmp(Tab, EmptyTab) != 0)
 			{
-				mefState = stateFrameDecode;
+				//mefState = stateFrameDecode;
+				mefState = stateOtherStationLeft; // for debug without frame[]
 				Retry = 10;
 			}
 			else if(Retry > 0)
@@ -111,16 +118,41 @@ void M_System_State(void)
 			else
 			{
 				my_printf("Answer not received \n");
-				mefState = stateIdle;
+				Retry = 10;
+				mefState = stateOtherStationLeft;
 			}
 			break;
 
 		case stateFrameDecode:
-			/* if noRequest and other station to ask : mefState = stateSendSlaveInquiry, else if no station left : mefState = stateIdle */
-			mefState = stateIdle;
+			decodedFrame = Frame_Decode(frame);
+			if(decodedFrame.idCalled == MASTER_ADDRESS)
+			{
+				if(decodedFrame.frameType == frameNoRequest)
+					mefState = stateOtherStationLeft;
+				else if(decodedFrame.frameType == frameSlaveRequest)
+					mefState = stateSendBroadcastOrder;
+			}
+			else
+				mefState = stateOtherStationLeft;
 			break;
 
 		case stateSendBroadcastOrder:
+			// Format_Frame + transmit
+			mefState = stateWaitForResponse;
+			break;
+
+		case stateOtherStationLeft:
+			if(stationNumber < totalStationNumber)
+			{
+				stationNumber++;
+				mefState = stateSendSlaveInquiry;
+			}
+
+			else
+			{
+				stationNumber = 1;
+				mefState = stateIdle;
+			}
 			break;
 
 		default:
@@ -232,7 +264,7 @@ void M_System_State_Setup()
 }
 
 //void M_Transmit(const char* Message)
-void M_Transmit(char* Message) // TODO : mettre un type à Message
+void M_Transmit(char* Message)
 {
   uint8_t dest_address = TX_Addr;
 
@@ -262,7 +294,7 @@ void M_Transmit(char* Message) // TODO : mettre un type à Message
   }
 }
 
-void M_Receive(void)
+uint8_t* M_Receive(void)
 {
 
   //////////////////////////////////////////////////////////////////////////////////
