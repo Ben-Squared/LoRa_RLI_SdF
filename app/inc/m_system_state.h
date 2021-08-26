@@ -36,7 +36,7 @@ void M_System_State_Setup(void);
   */
 void M_System_State(void);
 
-void M_Transmit(char* Message);
+void M_Transmit(uint8_t frame[4]);
 
 uint8_t* M_Receive(uint8_t frame[4]);
 

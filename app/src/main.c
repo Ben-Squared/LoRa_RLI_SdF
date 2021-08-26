@@ -20,15 +20,16 @@ static void SystemClock_Config();
 
 int main()
 {
+
 	uint32_t curtime=0;
 	uint32_t i=0;
 
 /******* dirty example, to move into slave state machine or master state machine *********/
-	uint8_t idDest = 0x01;
+/*	uint8_t idDest = 0x01;
 	frameTypeEnum frameType = frameSlaveInquiry;
 	uint8_t frame[4] = {0};
 	uint8_t Data[2] = {2,2};
-	frameField decodedFrame;
+	frameField decodedFrame; */
 /**************************/
 
 	// Initialize System clock to 48MHz from external clock
@@ -47,7 +48,7 @@ int main()
 	///////////////////////////////////////////
 
 	/****** dirty example for debug ***********/
-	my_printf("frame before formatting : ");
+/*	my_printf("frame before formatting : ");
 	for(i=0; i<4; i++)
 	{
 		my_printf("%d,", frame[i]);
@@ -72,7 +73,7 @@ int main()
 	if(!Frame_Verify(decodedFrame))
 		my_printf("Frame is correct ! \n\r");
 	else
-		my_printf("Frame Error ! ! \n\r");
+		my_printf("Frame Error ! ! \n\r"); */
 /*****************************************************/
 
 	//setup SX1272
@@ -81,7 +82,7 @@ int main()
 	while(1)
 	{
 		curtime=BSP_millis();
-		if((curtime%100)==0)//send every 100ms
+		if((curtime%1000)==0)//send every 100ms
 		{
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();

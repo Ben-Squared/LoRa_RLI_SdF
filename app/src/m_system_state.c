@@ -25,13 +25,15 @@ static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
 char Tab[32];
-char EmptyTab[32];
+uint8_t EmptyTab[4] = {0};
 
 uint8_t myId = 0;
 uint8_t totalStationNumber = 2;
 uint8_t stationNumber = 1;
-uint8_t frame[4] = {0};
+uint8_t frameToSend[4] = {0};
+uint8_t frameToReceive[4] = {0};
 frameField decodedFrame;
+//uint8_t i =0;
 
 StateEnum mefState;
 
@@ -98,15 +100,25 @@ void M_System_State(void)
 
 		case stateSendSlaveInquiry:
 			// Clear the receive table before sending the new message
+
+			for(uint8_t i=0; i<4;i++)
+			{
+				frameToSend[i] = 0;
+			}
 			my_printf("M Inquiry \r\n");
-			memset( Tab, 0, strlen(Tab) );
 
 			// Send the request
 
 			if(stationNumber == 1)
-				M_Transmit("01 This is a slave inquiry");
+			{
+				Frame_Format(STATION_1_ADDRESS, frameSlaveInquiry, frameToSend);
+				M_Transmit(frameToSend);
+			}
 			else if(stationNumber == 2)
-				M_Transmit("02 This is a slave inquiry");
+			{
+				Frame_Format(STATION_2_ADDRESS, frameSlaveInquiry, frameToSend);
+				M_Transmit(frameToSend);
+			}
 
 			mefState = stateWaitForResponse;
 			break;
@@ -114,12 +126,16 @@ void M_System_State(void)
 		case stateWaitForResponse:
 			my_printf("M wait for response \r\n");
 			// Receive the request answer
-			M_Receive(Tab);
-
-			if (strcmp(Tab, EmptyTab) != 0)
+			for(uint8_t i=0; i<4;i++)
 			{
-				//mefState = stateFrameDecode;
-				mefState = stateOtherStationLeft; // for debug without frame[]
+				frameToReceive[i] = 0;
+			}
+			M_Receive(frameToReceive);
+			my_printf("condition for debug : %d \n\r", !(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0));
+			if (!(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0))
+			{
+				mefState = stateFrameDecode;
+				//mefState = stateOtherStationLeft; // for debug without frame[]
 				Retry = 10;
 			}
 			else if(Retry > 0)
@@ -141,7 +157,10 @@ void M_System_State(void)
 		case stateFrameDecode:
 			my_printf("M decode \r\n");
 
-			decodedFrame = Frame_Decode(frame);
+			decodedFrame = Frame_Decode(frameToReceive);
+			my_printf("decoded frame id = %d \n\r", decodedFrame.idCalled);
+			my_printf("decoded frame type = %d \n\r", decodedFrame.frameType);
+			my_printf("decoded data = %d \n\r", decodedFrame.data);
 			if(decodedFrame.idCalled == MASTER_ADDRESS)
 			{
 				if(decodedFrame.frameType == frameNoRequest)
@@ -159,10 +178,12 @@ void M_System_State(void)
 			break;
 
 		case stateOtherStationLeft:
-			if(stationNumber < totalStationNumber)
+			my_printf("M station left \r\n");
+			if(stationNumber <= totalStationNumber)
 			{
 				stationNumber++;
 				mefState = stateSendSlaveInquiry;
+				my_printf("M station increment %d \r\n", stationNumber);
 			}
 
 			else
@@ -281,16 +302,17 @@ void M_System_State_Setup()
 }
 
 //void M_Transmit(const char* Message)
-void M_Transmit(char* Message)
+void M_Transmit(uint8_t frame[4])
 {
   uint8_t dest_address = TX_Addr;
+  uint8_t i =0;
 
   //////////////////////////////////////////////////////////////////////////////////
   // Transmit a packet continuously with a pause of "waitPeriod"
   if (ConfigOK == 1)
   {
 
-    e = BSP_SX1272_sendPacketTimeout(dest_address, Message, WaitTxMax);
+    e = BSP_SX1272_sendPacketTimeout(dest_address, frame, WaitTxMax);
     my_printf("e = %d", e);
 
     if (e == 0)
@@ -301,7 +323,11 @@ void M_Transmit(char* Message)
 	  my_printf("%d\r",dest_address);
 
 	  my_printf("\n Message sent : ");
-	  my_printf("%s\r\n",Message);
+	  for(i=0; i<4; i++)
+	  {
+		  my_printf("%d;",frame[i]);
+	  }
+	  	  my_printf("\r\n");
       cp++;
     }
     else
@@ -326,23 +352,30 @@ uint8_t* M_Receive(uint8_t frame[4])
 		if (currentstate._reception == CORRECT_PACKET)
 		{
 			my_printf("\n \r\n");
-			my_printf("Received data \r\n");
-
+			my_printf("Received data : ");
 			//////////////////////////////////////////////////////////////////////////////////
 			// Plot receive packets in the serial monitor
 			//for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			{
-			  my_printf("%c",currentstate.packet_received.data[i]);
+			  my_printf("%d;",currentstate.packet_received.data[i]);
+			  my_printf("%c;",currentstate.packet_received.data[i]);
 			}
+			my_printf("\n\r");
 
 			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			{
-			  Tab[i] = currentstate.packet_received.data[i];
+			  frame[i] = currentstate.packet_received.data[i];
 			}
 
-			my_printf("\r\n");
-			my_printf("Message : %s \r\n", Tab);
+			//my_printf("\r\n");
+			my_printf("Message : ");
+			for(uint8_t i = 0; i<4; i++)
+			{
+				my_printf("%d;", frame[i]);
+			}
+			my_printf("\n\r");
+
 			my_printf("Packet number %d \r\n", currentstate.packet_received.packnum);
 			my_printf("Length %d \r\n",currentstate.packet_received.length);
 		}
