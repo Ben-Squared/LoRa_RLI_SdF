@@ -9,7 +9,7 @@
 #define APP_INC_FRAME_H_
 
 #define MASTER
-//#undef MASTER		// If commented => MASTER Mode and if uncommented => SLAVE Mode
+#undef MASTER		// If commented => MASTER Mode and if uncommented => SLAVE Mode
 
 #ifndef MASTER
 #define SLAVE

@@ -13,6 +13,7 @@
 #include "comSX1272.h"
 #include "string.h"
 #include "delay.h"
+#include "frame.h"
 
 extern SX1272status currentstate;
 
@@ -24,16 +25,19 @@ static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
 char Tab[30];
-char EmptyTab[30];
+uint8_t EmptyTab[4] = {0};
 
 StateEnum mefState;
+frameField decodedFrame;
+uint8_t frameToSend[4] = {0};
+uint8_t frameToReceive[4] = {0};
 
 static uint8_t myId = 1; //id de la station (0 pour le maitre, de 1 � 254 pour les stations)
 
 /************ Status variables **************/
 static int8_t e;
 static uint8_t ConfigOK = 1;
-
+uint8_t dataRequested =0;
 
 /************ functions **************/
 
@@ -48,8 +52,12 @@ void S_System_State(void)
 		break;
 
 	case stateIdle:
-		S_Receive(Tab);
-		if (strcmp(Tab, EmptyTab) != 0)
+		for(uint8_t i = 0; i< 4; i++)
+		{
+			frameToReceive[i] = 0;
+		}
+		S_Receive(frameToReceive);
+		if (!(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0))
 		{
 			my_printf("Slave 01 message received \n");
 
@@ -58,18 +66,44 @@ void S_System_State(void)
 		break;
 
 	case stateFrameDecode:
-		/*TODO : switch case cf diagram*/
-		if (Tab[1] == myId)
+		my_printf("S decode \r\n");
+
+		decodedFrame = Frame_Decode(frameToReceive);
+		if(decodedFrame.idCalled == myId)
 		{
-
+			if(decodedFrame.frameType == frameSlaveInquiry)
+				mefState = stateSendNoRequest;
+			else if(decodedFrame.frameType == frameBroadcastOrder)
+				mefState = stateSendData;
 		}
-
-			mefState = stateSendNoRequest;
+		else if(decodedFrame.idCalled == BROADCAST_ADDRESS)
+		{
+			if(dataRequested)
+			{
+				// update value
+			}
+			mefState = stateIdle;
+		}
+		else
+		{
+			my_printf("BAD_FRAME");
+			mefState = stateIdle;
+		}
 		break;
 
 	case stateSendNoRequest:
-		S_Transmit("No Request 01");
-		memset(Tab, 0, sizeof(Tab));
+		my_printf("S send no request \r\n");
+		for(uint8_t i = 0; i< 4; i++)
+		{
+			frameToSend[i] = 0;
+		}
+		Frame_Format(MASTER_ADDRESS, frameNoRequest, frameToSend);
+
+		//BSP_DELAY_ms(500);
+
+
+		S_Transmit(frameToSend);
+
 		mefState = stateIdle;
 		break;
 
@@ -182,7 +216,7 @@ void S_System_State_Setup(void)
 }
 
 //void M_Transmit(const char* Message)
-void S_Transmit(char* Message) // TODO : mettre un type à Message
+void S_Transmit(uint8_t frame[4]) // TODO : mettre un type à Message
 {
   uint8_t dest_address = TX_Addr;
 
@@ -191,7 +225,7 @@ void S_Transmit(char* Message) // TODO : mettre un type à Message
   if (ConfigOK == 1)
   {
 
-    e = BSP_SX1272_sendPacketTimeout(dest_address, Message, WaitTxMax);
+    e = BSP_SX1272_sendPacketTimeout(dest_address, frame, WaitTxMax);
 
     if (e == 0)
     {
@@ -201,7 +235,12 @@ void S_Transmit(char* Message) // TODO : mettre un type à Message
 	  my_printf("%d\r",dest_address);
 
 	  my_printf("\n Message sent : ");
-	  my_printf("%s\r\n",Message);
+	  for(uint8_t i = 0; i< 4; i++)
+	  {
+		  my_printf("%d;",frame[i]);
+	  }
+	  my_printf("\n\r");
+
       cp++;
     }
     else
@@ -212,7 +251,7 @@ void S_Transmit(char* Message) // TODO : mettre un type à Message
   }
 }
 
-void S_Receive(void)
+uint8_t* S_Receive(uint8_t frame[4])
 {
 
   //////////////////////////////////////////////////////////////////////////////////
@@ -233,21 +272,27 @@ void S_Receive(void)
 			//for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			{
-			  my_printf("%c",currentstate.packet_received.data[i]);
+			  my_printf("%d",currentstate.packet_received.data[i]);
 			}
 
 			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			{
-			  Tab[i] = currentstate.packet_received.data[i];
+			  frame[i] = currentstate.packet_received.data[i];
 			}
 
 			my_printf("\r\n");
-			my_printf("Message : %s \r\n", Tab);
+			my_printf("\n Message received : ");
+			for(uint8_t i = 0; i< 4; i++)
+			{
+				my_printf("%d;",frame[i]);
+			}
+
 			my_printf("Packet number %d \r\n", currentstate.packet_received.packnum);
 			my_printf("Length %d \r\n",currentstate.packet_received.length);
 		}
 	  }
   }
+  return frame;
   //BSP_DELAY_ms(1000);
 }
 

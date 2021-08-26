@@ -33,6 +33,12 @@ void S_System_State_Setup(void);
   */
 void S_System_State(void);
 
+// TODO : doxygen
+void S_Transmit(uint8_t frame[4]);
+
+// TODO : doxygen
+uint8_t* S_Receive(uint8_t frame[4]);
+
 #endif /* APP_INC_S_SYSTEM_STATE_H_ */
 
 
