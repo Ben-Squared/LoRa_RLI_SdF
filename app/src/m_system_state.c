@@ -27,7 +27,7 @@ static uint16_t RegFdev = Fdev;
 char Tab[32];
 char EmptyTab[32];
 
-uint8_t myId = 1;
+uint8_t myId = 0;
 uint8_t totalStationNumber = 2;
 uint8_t stationNumber = 1;
 uint8_t frame[4] = {0};
@@ -88,6 +88,7 @@ void M_System_State(void)
 
 		case stateIdle:
 			// wait for periodic interrupt
+
 			mefState = stateSendSlaveInquiry;
 			break;
 
@@ -95,7 +96,10 @@ void M_System_State(void)
 			// Clear the receive table before sending the new message
 			memset( Tab, 0, sizeof(Tab) );
 			// Send the request
-			M_Transmit("01 This is a slave inquiry");
+			if(stationNumber == 1)
+				M_Transmit("01 This is a slave inquiry");
+			else if(stationNumber == 2)
+				M_Transmit("02 This is a slave inquiry");
 
 			mefState = stateWaitForResponse;
 			break;
