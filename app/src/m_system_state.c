@@ -13,6 +13,8 @@
 #include "string.h"
 #include "delay.h"
 
+#define RETRY_RELOAD_VALUE	5
+
 extern SX1272status currentstate;
 
 ///////////////////////////////////////////////////////////////
@@ -32,6 +34,7 @@ uint8_t totalStationNumber = 2;
 uint8_t stationNumber = 1;
 uint8_t frameToSend[4] = {0};
 uint8_t frameToReceive[4] = {0};
+//uint8_t frame[4] = {0};
 frameField decodedFrame;
 //uint8_t i =0;
 
@@ -41,7 +44,7 @@ StateEnum mefState;
 static int8_t e;
 static uint8_t ConfigOK = 1;
 
-int8_t Retry;
+uint8_t Retry;
 
 ///////////////////////////////////////////////////////////////
 // Main function
@@ -99,26 +102,18 @@ void M_System_State(void)
 			break;
 
 		case stateSendSlaveInquiry:
+			my_printf("M Inquiry \r\n");
 			// Clear the receive table before sending the new message
 
 			for(uint8_t i=0; i<4;i++)
 			{
 				frameToSend[i] = 0;
 			}
-			my_printf("M Inquiry \r\n");
 
 			// Send the request
 
-			if(stationNumber == 1)
-			{
-				Frame_Format(STATION_1_ADDRESS, frameSlaveInquiry, frameToSend);
-				M_Transmit(frameToSend);
-			}
-			else if(stationNumber == 2)
-			{
-				Frame_Format(STATION_2_ADDRESS, frameSlaveInquiry, frameToSend);
-				M_Transmit(frameToSend);
-			}
+			Frame_Format(stationNumber, frameSlaveInquiry, frameToSend);
+			M_Transmit(frameToSend);
 
 			mefState = stateWaitForResponse;
 			break;
@@ -136,7 +131,7 @@ void M_System_State(void)
 			{
 				mefState = stateFrameDecode;
 				//mefState = stateOtherStationLeft; // for debug without frame[]
-				Retry = 10;
+				Retry = RETRY_RELOAD_VALUE;
 			}
 			else if(Retry > 0)
 			{
@@ -147,7 +142,7 @@ void M_System_State(void)
 			{
 
 				my_printf("Answer not received \n");
-				Retry = 10;
+				Retry = RETRY_RELOAD_VALUE;
 				mefState = stateOtherStationLeft;
 
 			}
@@ -181,16 +176,15 @@ void M_System_State(void)
 			my_printf("M station left \r\n");
 			if(stationNumber <= totalStationNumber)
 			{
-				stationNumber++;
+				if(stationNumber == totalStationNumber)
+					stationNumber = 1;
+				else
+					stationNumber++;
 				mefState = stateSendSlaveInquiry;
 				my_printf("M station increment %d \r\n", stationNumber);
 			}
 
-			else
-			{
-				stationNumber = 1;
-				mefState = stateIdle;
-			}
+			mefState = stateIdle;
 			break;
 
 		default:
@@ -201,7 +195,7 @@ void M_System_State(void)
 void M_System_State_Setup()
 {
   // Number of maximum reception loop
-  Retry = 10;
+  Retry = RETRY_RELOAD_VALUE;
 
   // Power ON the module
   e = BSP_SX1272_ON(type_modulation);
@@ -312,7 +306,7 @@ void M_Transmit(uint8_t frame[4])
   if (ConfigOK == 1)
   {
 
-    e = BSP_SX1272_sendPacketTimeout(dest_address, frame, WaitTxMax);
+    e = BSP_SX1272_sendPacketTimeout(dest_address, (char*)frame, WaitTxMax);
     my_printf("e = %d", e);
 
     if (e == 0)
