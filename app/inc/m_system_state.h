@@ -38,7 +38,7 @@ void M_System_State(void);
 
 void M_Transmit(char* Message);
 
-void M_Receive(void);
+uint8_t* M_Receive(uint8_t frame[4]);
 
 #endif /* APP_INC_M_SYSTEM_STATE_H_ */
 

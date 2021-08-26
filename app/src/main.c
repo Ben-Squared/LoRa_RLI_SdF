@@ -77,12 +77,10 @@ int main()
 
 	//setup SX1272
 	APP_SX1272_setup();
-	M_System_State_Setup();
 
 	while(1)
 	{
 		curtime=BSP_millis();
-
 		if((curtime%100)==0)//send every 100ms
 		{
 			//APP_SX1272_runTransmit();

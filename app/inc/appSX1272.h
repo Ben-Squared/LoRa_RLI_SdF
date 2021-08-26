@@ -20,7 +20,7 @@
 
 #define OutPower POW_14 //min -1, max 14
 #define TypeModulation 0 //0: LORA, 1:FSK
-#define PeriodTransmission 5000 //en ms
+#define PeriodTransmission 500 //en ms 5000
 
 //LORA configuration (to be changed)
 #define paramBW BW_125 //BW_125, BW_250 or BW_500
@@ -33,10 +33,10 @@
 
 //Other common parameters (do not change!!)
 #define PreambLong 12//12
-#define freq_centrale CH_868v3
+#define freq_centrale CH_868v5
 #define MaxNbRetries 3
 #define WaitTxMax 5000 //en ms
-#define WaitRxMax 1500 //en ms
+#define WaitRxMax 10000 //en ms
 
 void APP_SX1272_setup();
 void APP_SX1272_runTransmit();

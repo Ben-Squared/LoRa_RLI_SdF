@@ -47,11 +47,13 @@ int8_t Retry;
 
 void M_system_state_main(char Tab[30])
 {
+
 //	enum {Station_1, Station_2, Station_3};
 //	char etat = Station_1;
 //	char Retour = "";
 
-	M_Receive(Tab);
+
+	//M_Receive(Tab);
 
 	//while (1) {
 	/*switch (etat) {
@@ -82,20 +84,25 @@ void M_System_State(void)
 	switch(mefState)
 	{
 		case stateInit:
+			my_printf("M Init \r\n");
 			M_System_State_Setup();
 			mefState = stateIdle;
 			break;
 
 		case stateIdle:
 			// wait for periodic interrupt
+			my_printf("M stateIdle \r\n");
 
 			mefState = stateSendSlaveInquiry;
 			break;
 
 		case stateSendSlaveInquiry:
 			// Clear the receive table before sending the new message
-			memset( Tab, 0, sizeof(Tab) );
+			my_printf("M Inquiry \r\n");
+			memset( Tab, 0, strlen(Tab) );
+
 			// Send the request
+
 			if(stationNumber == 1)
 				M_Transmit("01 This is a slave inquiry");
 			else if(stationNumber == 2)
@@ -105,6 +112,7 @@ void M_System_State(void)
 			break;
 
 		case stateWaitForResponse:
+			my_printf("M wait for response \r\n");
 			// Receive the request answer
 			M_Receive(Tab);
 
@@ -121,13 +129,18 @@ void M_System_State(void)
 			}
 			else
 			{
+
 				my_printf("Answer not received \n");
 				Retry = 10;
 				mefState = stateOtherStationLeft;
+
 			}
+			//BSP_DELAY_ms(5000);
 			break;
 
 		case stateFrameDecode:
+			my_printf("M decode \r\n");
+
 			decodedFrame = Frame_Decode(frame);
 			if(decodedFrame.idCalled == MASTER_ADDRESS)
 			{
@@ -278,6 +291,7 @@ void M_Transmit(char* Message)
   {
 
     e = BSP_SX1272_sendPacketTimeout(dest_address, Message, WaitTxMax);
+    my_printf("e = %d", e);
 
     if (e == 0)
     {
@@ -294,11 +308,11 @@ void M_Transmit(char* Message)
     {
       my_printf("\n Transmission problem !\r\n");
     }
-    //BSP_DELAY_ms(waitPeriod); //delay to send packet every PeriodTransmission
+    BSP_DELAY_ms(1000); //delay to send packet every PeriodTransmission
   }
 }
 
-uint8_t* M_Receive(void)
+uint8_t* M_Receive(uint8_t frame[4])
 {
 
   //////////////////////////////////////////////////////////////////////////////////
@@ -334,5 +348,6 @@ uint8_t* M_Receive(void)
 		}
 	  }
   }
-  //BSP_DELAY_ms(1000);
+  BSP_DELAY_ms(1000);
+  return frame;
 }
