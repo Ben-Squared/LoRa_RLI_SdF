@@ -32,7 +32,7 @@ frameField decodedFrame;
 uint8_t frameToSend[4] = {0};
 uint8_t frameToReceive[4] = {0};
 
-static uint8_t myId = 1; //id de la station (0 pour le maitre, de 1 à 254 pour les stations)
+static uint8_t myId = 2; //id de la station (254 pour le maitre, de 1 a 253 pour les stations, 255 pour broadcast)
 
 /************ Status variables **************/
 static int8_t e;
