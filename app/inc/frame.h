@@ -9,21 +9,35 @@
 #define APP_INC_FRAME_H_
 
 #define MASTER
-//#undef MASTER
+//#undef MASTER		// If commented => MASTER Mode and if uncommented => SLAVE Mode
 
 #ifndef MASTER
 #define SLAVE
 #endif
 
+/* addresses defines */
+#define MASTER_ADDRESS		0x00
+#define STATION_1_ADDRESS	0x01
+#define STATION_2_ADDRESS	0x02
+#define BROADCAST_ADDRESS	0xFF
+
 #include <stdint.h>
 
+/*
+typedef enum {
+	masterAddress,
+	stationAddress1,
+	stationAddress2,
+}; */
 
 typedef enum {
 	frameSlaveInquiry,
 	frameBroadcastOrder,
 	frameSlaveRequest,
 	frameSlaveData,
-	frameNoRequest
+	frameNoRequest,
+	lastElement, // convenience purpose
+	frameDiscovery // for future : if we add a node, this frame will allow to add the address to a list (not done yet)
 }frameTypeEnum;
 
 
@@ -36,9 +50,27 @@ typedef struct {
 
 /**
   * @brief  function for formatting frame according to frameType
-  * @param  frameType : {frameSlaveInquiry, frameBroadcastOrder}
-  * @retval None
+  * @param  idDest : id to send frame to. Not used in case of slaveRequest and noRequest (addressed to master only)
+  * @param	frameType : {frameSlaveInquiry, frameBroadcastOrder, frameSlaveRequest, frameNoRequest}
+  * @retval pointer to frame
   */
-void Frame_Format(frameTypeEnum frameType);
+uint8_t* Frame_Format(uint8_t idDest, frameTypeEnum frameType, uint8_t frame[32]);
+
+/**
+  * @brief  function for decoding received frame and put data into fields
+  * @param  frame to decode
+  * @retval decoded frame
+  */
+
+frameField Frame_Decode(uint8_t frameToDecode[32]);
+
+/**
+  * @brief  function for verifying integrity of received frame. Must be called after Frame_Decode()
+  * @param  frame to verify
+  * @retval 0 = frame OK 1 = frame NOK
+  */
+uint8_t Frame_Verify(frameField frameToVerify);
+
+void Set_Data(uint8_t dataToSet[2]);
 
 #endif /* APP_INC_FRAME_H_ */
