@@ -28,6 +28,8 @@ char EmptyTab[30];
 
 StateEnum mefState;
 
+static uint8_t myId = 1; //id de la station (0 pour le maitre, de 1 à 254 pour les stations)
+
 /************ Status variables **************/
 static int8_t e;
 static uint8_t ConfigOK = 1;
@@ -57,7 +59,11 @@ void S_System_State(void)
 
 	case stateFrameDecode:
 		/*TODO : switch case cf diagram*/
-		if (Tab[1] == "1")
+		if (Tab[1] == myId)
+		{
+
+		}
+
 			mefState = stateSendNoRequest;
 		break;
 

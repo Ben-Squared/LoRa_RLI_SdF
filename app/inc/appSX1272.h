@@ -33,7 +33,7 @@
 
 //Other common parameters (do not change!!)
 #define PreambLong 12//12
-#define freq_centrale CH_868v3
+#define freq_centrale CH_868v5
 #define MaxNbRetries 3
 #define WaitTxMax 5000 //en ms
 #define WaitRxMax 10000 //en ms
