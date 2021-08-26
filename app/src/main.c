@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- *  Created on: 23 ao�t 2020
+ *  Created on: 23 aout 2020
  *      Author: Arnaud
  */
 
@@ -35,12 +35,12 @@ int main()
 
 	///////////////////////////////////////////
 	//setup SX1272
-	APP_SX1272_setup();
+		APP_SX1272_setup();
 
 	while(1)
 	{
 		curtime=BSP_millis();
-		if((curtime%1000)==0)//send every 1000ms
+		if((curtime%100)==0)//send every 1000ms
 		{
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();
@@ -50,9 +50,14 @@ int main()
 			//M_system_state_main(Tab);
 			my_printf("main SLAVE \r\n");
 			i++;
+
 		}
 	}
 }
+
+
+
+// toute la partie bas niveau, on s'en fout
 
 /*
  * 	Clock configuration for the Nucleo STM32F072RB board

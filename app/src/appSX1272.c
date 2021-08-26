@@ -17,13 +17,19 @@ extern SX1272status currentstate;
 ///////////////////////////////////////////////////////////////
 // Déclaration variables globales
 ///////////////////////////////////////////////////////////////
-static char LgMsg = 0;
-static char Message[] = "Salut tonton, ça farte ?";
-static float waitPeriod = 0; //en ms
-static int cp = 0;  //compteur de paquets transmis
-static int type_modulation=TypeModulation;
+
+static char LgMsg = 0;                      //longueur message
+static char Message[] = "Capteur 1 est chaud";   //message en char
+//static char Message[] = "Capteur 1 est tiede";
+//static char Message[] = "Capteur 1 est froid";
+
+static float waitPeriod = 0;                //en ms
+static int cp = 0;                          //compteur de paquets transmis
+static int type_modulation=TypeModulation;  //0: LORA, 1:FSK
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
+
+static int state_receive = 0;
 
 // status variables
 static int8_t e;
@@ -132,7 +138,7 @@ void APP_SX1272_setup()
   BSP_DELAY_ms(1000);
 }
 
-void APP_SX1272_runTransmit()
+void APP_SX1272_runTransmit() ////////////// IMPORTANT ///////////////
 {
   uint8_t dest_address = TX_Addr;
 
@@ -151,10 +157,11 @@ void APP_SX1272_runTransmit()
 
     if (e == 0)
     {
-      my_printf("\n Packet number ");
+      /*my_printf("\n Packet number ");
       my_printf("%d",cp);
 	  my_printf(" ;Rx node address ");
-	  my_printf("%d\r\n",dest_address);
+	  */
+	  my_printf("The following message as been transmitted", Message);
       cp++;
     }
     else
@@ -165,21 +172,19 @@ void APP_SX1272_runTransmit()
   }
 }
 
-void APP_SX1272_runReceive()
+void APP_SX1272_runReceive() ///////////// IMPORTANT //////////////
 {
   char StatusRXMessage='0';
 
-  //////////////////////////////////////////////////////////////////////////////////
   // Receive packets continuously
   if (ConfigOK == 1)
   {
 	    //affichage entête
-	    //statut (correct = 1 or bad = 0 or non received = 2)
-	  my_printf("\n \r\n");
-	  my_printf("Packet status ; Packet number ; Received Lg ; Received data ; RSSI packet (dBm) ; source address; PER (%); BER (%)\r\n");
+	                             //statut (correct = 1 or bad = 0 or non received = 2)
 	  my_printf("\n \r\n");
 
     e = BSP_SX1272_receivePacketTimeout(WaitRxMax);
+
     //paquet reçu, correct ou non
     if (e == 0)
     {
@@ -189,7 +194,9 @@ void APP_SX1272_runReceive()
        // Check if the received packet is correct
        // The length and the content of the packet is checked
        // if it is valid, the cpok counter is incremented
+
        LgMsg=strlen(Message);
+
        if(currentstate.packet_received.length>=LgMsg)//check the length
        {
         if(memcmp(Message,currentstate.packet_received.data,LgMsg)==0)//check the content
@@ -204,19 +211,23 @@ void APP_SX1272_runReceive()
     {
       StatusRXMessage = '2';
     }
+    state_receive = 1;
 
     //////////////////////////////////////////////////////////////////////////////////
     // Plot receive packets in the serial monitor
+
+    /*
     my_printf("%d",StatusRXMessage);
     my_printf(" ; ");
     my_printf("%d",currentstate.packet_received.packnum);
     my_printf(" ; ");
     my_printf("%d",currentstate.packet_received.length);
     my_printf(" ; ");
+    */
     for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
     {
       my_printf("%c",currentstate.packet_received.data[i]);
-      my_printf(" ");
+      //my_printf(" ");
     }
     ///////////////////////////////////////////////////////////////////////////////////
     // Plot RSSI
@@ -225,7 +236,7 @@ void APP_SX1272_runReceive()
     if(TypeModulation == 0)
     {
       e = BSP_SX1272_getRSSIpacket();
-      my_printf("%d\r\n",currentstate._RSSIpacket);
+      //my_printf("%d\r\n",currentstate._RSSIpacket);
     }
     // FSK mode
     else
@@ -234,5 +245,5 @@ void APP_SX1272_runReceive()
       //my_printf("%d\r\n",currentstate._RSSI);
     }
   }
-  BSP_DELAY_ms(1000);
+  //BSP_DELAY_ms(1000);
 }
