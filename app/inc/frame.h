@@ -16,7 +16,7 @@
 #endif
 
 /* addresses defines */
-#define MASTER_ADDRESS		0x00
+#define MASTER_ADDRESS		0xFE
 #define STATION_1_ADDRESS	0x01
 #define STATION_2_ADDRESS	0x02
 #define BROADCAST_ADDRESS	0xFF

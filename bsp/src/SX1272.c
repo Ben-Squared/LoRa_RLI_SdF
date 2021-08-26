@@ -3825,6 +3825,7 @@ uint8_t BSP_SX1272_setPacket(uint8_t dest, char *payload)
 		for( uint16_t i = 0; i < currentstate._payloadlength; i++)
 		{
 			BSP_SX1272_Write(REG_FIFO, currentstate.packet_sent.data[i]);  // Writing the payload in FIFO
+			my_printf("%d ;",currentstate.packet_sent.data[i]);
 		}
 		BSP_SX1272_Write(REG_FIFO, currentstate.packet_sent.retry);		// Writing the number retry in FIFO
 		state = 0;

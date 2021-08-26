@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 frameTypeEnum frameType;
+
 frameField decodedFrame;
 uint8_t data[2] = {0};
 
