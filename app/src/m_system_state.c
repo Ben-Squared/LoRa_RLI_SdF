@@ -38,11 +38,12 @@ uint8_t frameToReceive[4] = {0};
 frameField decodedFrame;
 //uint8_t i =0;
 
-StateEnum mefState;
+StateEnum mefState = stateInit;
 
 // status variables
 static int8_t e;
 static uint8_t ConfigOK = 1;
+static isBroadcatOrder =0;
 
 uint8_t Retry;
 
@@ -125,7 +126,9 @@ void M_System_State(void)
 			{
 				frameToReceive[i] = 0;
 			}
+
 			M_Receive(frameToReceive);
+
 			my_printf("condition for debug : %d \n\r", !(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0));
 			if (!(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0))
 			{
@@ -136,7 +139,14 @@ void M_System_State(void)
 			else if(Retry > 0)
 			{
 				Retry--;
-				mefState = stateSendSlaveInquiry;
+				if(isBroadcatOrder)
+				{
+					mefState = stateSendBroadcastOrder;
+					isBroadcatOrder = 0;
+				}
+				else
+					mefState = stateSendSlaveInquiry;
+
 			}
 			else
 			{
@@ -168,7 +178,9 @@ void M_System_State(void)
 			break;
 
 		case stateSendBroadcastOrder:
-			// Format_Frame + transmit
+			Frame_Format(frameToReceive[2], frameBroadcastOrder, frameToSend); // after slaveRequest, frameToReceive[2] contains ID of station's required data
+			M_Transmit(frameToSend);
+			isBroadcatOrder = 1;
 			mefState = stateWaitForResponse;
 			break;
 
