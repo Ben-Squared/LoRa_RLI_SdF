@@ -33,6 +33,9 @@ int main()
 	SystemClock_Config();
 	// Initialize timebase
 	BSP_TIMER_Timebase_Init();
+
+	// Initialize Push Button
+	BSP_PB_Init();
 	// Initialize NVIC
 	BSP_NVIC_Init();
 	// Initialize SPI interface

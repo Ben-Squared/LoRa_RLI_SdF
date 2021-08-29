@@ -1,7 +1,7 @@
 /*
  * bsp.c
  *
- *  Created on: 23 août 2020
+ *  Created on: 23 aoï¿½t 2020
  *      Author: Arnaud
  */
 
@@ -84,6 +84,20 @@ void BSP_PB_Init()
 
 	// Disable PC13 Pull-up/Pull-down
 	GPIOC->PUPDR &= ~GPIO_PUPDR_PUPDR13_Msk;
+
+	// Enable SYSCFG clock
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+
+	// Select Port C as interrupt source for EXTI line 13
+	SYSCFG->EXTICR[3] &= ~ SYSCFG_EXTICR4_EXTI13_Msk;
+	SYSCFG->EXTICR[3] |=   SYSCFG_EXTICR4_EXTI13_PC;
+
+	// Enable EXTI line 13
+	EXTI->IMR |= EXTI_IMR_IM13;
+
+	// Disable Rising / Enable Falling trigger
+	EXTI->RTSR &= ~EXTI_RTSR_RT13;
+	EXTI->FTSR |=  EXTI_FTSR_FT13;
 }
 
 /*

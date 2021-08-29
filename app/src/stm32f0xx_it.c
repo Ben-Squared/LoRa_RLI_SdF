@@ -101,6 +101,22 @@ void SysTick_Handler(void)
 /*  file (startup_stm32f0xx.s).                                               */
 /******************************************************************************/
 
+extern uint8_t dataNeeded;
+
+void EXTI4_15_IRQHandler()
+{
+	// Test for line 13 pending interrupt
+	if ((EXTI->PR & EXTI_PR_PR13_Msk) != 0)
+	{
+		// Clear pending bit 13 by writing a '1'
+		EXTI->PR |= EXTI_PR_PR13;
+
+
+		// Do what you need
+		dataNeeded = 1;
+	}
+}
+
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

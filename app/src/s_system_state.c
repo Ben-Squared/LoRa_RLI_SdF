@@ -31,13 +31,15 @@ StateEnum mefState;
 frameField decodedFrame;
 uint8_t frameToSend[4] = {0};
 uint8_t frameToReceive[4] = {0};
+uint8_t dataRequest[2] = {1,0}; // data needed from station 1 only
+uint8_t dataToSend[2] = {5,5}; // data to be sent when Station sends data
 
 static uint8_t myId = 2; //id de la station (254 pour le maitre, de 1 a 253 pour les stations, 255 pour broadcast)
 
 /************ Status variables **************/
 static int8_t e;
 static uint8_t ConfigOK = 1;
-uint8_t dataRequested =0;
+static uint8_t dataNeeded =0;
 
 /************ functions **************/
 
@@ -72,21 +74,29 @@ void S_System_State(void)
 		if(decodedFrame.idCalled == myId)
 		{
 			if(decodedFrame.frameType == frameSlaveInquiry)
-				mefState = stateSendNoRequest;
+			{
+				if(dataNeeded)
+					mefState = stateSendSlaveRequest;
+				else
+					mefState = stateSendNoRequest;
+			}
+
 			else if(decodedFrame.frameType == frameBroadcastOrder)
+			{
 				mefState = stateSendData;
+			}
 		}
 		else if(decodedFrame.idCalled == BROADCAST_ADDRESS)
 		{
-			if(dataRequested)
+			if(dataNeeded)
 			{
-				// update value
+				dataNeeded = 0;
 			}
 			mefState = stateIdle;
 		}
 		else
 		{
-			my_printf("BAD_FRAME");
+			my_printf("Frame not needed or invalid \n\r");
 			mefState = stateIdle;
 		}
 		break;
@@ -108,9 +118,15 @@ void S_System_State(void)
 		break;
 
 	case stateSendSlaveRequest:
+		Set_Data(dataRequest);
+		Frame_Format(MASTER_ADDRESS, frameSlaveRequest, frameToSend);
+		mefState = stateIdle;
 		break;
 
 	case stateSendData:
+		Set_Data(dataToSend);
+		Frame_Format(BROADCAST_ADDRESS, frameSlaveData, frameToSend);
+		mefState = stateIdle;
 		break;
 	}
 }
