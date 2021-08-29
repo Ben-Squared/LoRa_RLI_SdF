@@ -39,7 +39,7 @@ static uint8_t myId = 2; //id de la station (254 pour le maitre, de 1 a 253 pour
 /************ Status variables **************/
 static int8_t e;
 static uint8_t ConfigOK = 1;
-static uint8_t dataNeeded =0;
+uint8_t dataNeeded =0;
 
 /************ functions **************/
 
@@ -120,12 +120,14 @@ void S_System_State(void)
 	case stateSendSlaveRequest:
 		Set_Data(dataRequest);
 		Frame_Format(MASTER_ADDRESS, frameSlaveRequest, frameToSend);
+		S_Transmit(frameToSend);
 		mefState = stateIdle;
 		break;
 
 	case stateSendData:
 		Set_Data(dataToSend);
 		Frame_Format(BROADCAST_ADDRESS, frameSlaveData, frameToSend);
+		S_Transmit(frameToSend);
 		mefState = stateIdle;
 		break;
 	}
