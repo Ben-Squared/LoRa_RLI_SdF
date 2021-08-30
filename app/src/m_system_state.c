@@ -89,20 +89,20 @@ void M_System_State(void)
 	switch(mefState)
 	{
 		case stateInit:
-			my_printf("M Init \r\n");
+			//my_printf("M Init \r\n");
 			M_System_State_Setup();
 			mefState = stateIdle;
 			break;
 
 		case stateIdle:
 			// wait for periodic interrupt
-			my_printf("M stateIdle \r\n");
+			//my_printf("M stateIdle \r\n");
 
 			mefState = stateSendSlaveInquiry;
 			break;
 
 		case stateSendSlaveInquiry:
-			my_printf("M Inquiry \r\n");
+			//my_printf("M Inquiry \r\n");
 			// Clear the receive table before sending the new message
 
 			for(uint8_t i=0; i<4;i++)
@@ -119,14 +119,13 @@ void M_System_State(void)
 			break;
 
 		case stateWaitForResponse:
-			my_printf("M wait for response \r\n");
+			//my_printf("M wait for response \r\n");
 			// Receive the request answer
 			for(uint8_t i=0; i<4;i++)
 			{
 				frameToReceive[i] = 0;
 			}
 			M_Receive(frameToReceive);
-			my_printf("condition for debug : %d \n\r", !(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0));
 			if (!(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0))
 			{
 				mefState = stateFrameDecode;
@@ -150,12 +149,12 @@ void M_System_State(void)
 			break;
 
 		case stateFrameDecode:
-			my_printf("M decode \r\n");
+			//my_printf("M decode \r\n");
 
 			decodedFrame = Frame_Decode(frameToReceive);
-			my_printf("decoded frame id = %d \n\r", decodedFrame.idCalled);
+			/*my_printf("decoded frame id = %d \n\r", decodedFrame.idCalled);
 			my_printf("decoded frame type = %d \n\r", decodedFrame.frameType);
-			my_printf("decoded data = %d \n\r", decodedFrame.data);
+			my_printf("decoded data = %d \n\r", decodedFrame.data);*/
 			if(decodedFrame.idCalled == MASTER_ADDRESS)
 			{
 				if(decodedFrame.frameType == frameNoRequest)
@@ -173,7 +172,7 @@ void M_System_State(void)
 			break;
 
 		case stateOtherStationLeft:
-			my_printf("M station left \r\n");
+			//my_printf("M station left \r\n");
 			if(stationNumber <= totalStationNumber)
 			{
 				if(stationNumber == totalStationNumber)
@@ -181,7 +180,7 @@ void M_System_State(void)
 				else
 					stationNumber++;
 				mefState = stateSendSlaveInquiry;
-				my_printf("M station increment %d \r\n", stationNumber);
+				//my_printf("M station increment %d \r\n", stationNumber);
 			}
 
 			mefState = stateIdle;
@@ -307,16 +306,16 @@ void M_Transmit(uint8_t frame[4])
   {
 
     e = BSP_SX1272_sendPacketTimeout(dest_address, (char*)frame, WaitTxMax);
-    my_printf("e = %d", e);
+    my_printf("e = %d \r\n", e);
 
     if (e == 0)
     {
-      my_printf("\n Packet number ");
+      /*my_printf("\n Packet number ");
       my_printf("%d",cp);
 	  my_printf(" ; Broadcast address ");
-	  my_printf("%d\r",dest_address);
+	  my_printf("%d\r",dest_address);*/
 
-	  my_printf("\n Message sent : ");
+	  my_printf("Message sent : ");
 	  for(i=0; i<4; i++)
 	  {
 		  my_printf("%d;",frame[i]);
@@ -328,7 +327,7 @@ void M_Transmit(uint8_t frame[4])
     {
       my_printf("\n Transmission problem !\r\n");
     }
-    BSP_DELAY_ms(1000); //delay to send packet every PeriodTransmission
+    //BSP_DELAY_ms(1000); //delay to send packet every PeriodTransmission
   }
 }
 
@@ -345,17 +344,15 @@ uint8_t* M_Receive(uint8_t frame[4])
 	  {
 		if (currentstate._reception == CORRECT_PACKET)
 		{
-			my_printf("\n \r\n");
-			my_printf("Received data : ");
+			//my_printf("Received data : ");
 			//////////////////////////////////////////////////////////////////////////////////
 			// Plot receive packets in the serial monitor
 			//for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
-			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
+			/*for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			{
 			  my_printf("%d;",currentstate.packet_received.data[i]);
-			  my_printf("%c;",currentstate.packet_received.data[i]);
-			}
-			my_printf("\n\r");
+			}*/
+			//my_printf("\n\r");
 
 			for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
 			{
@@ -368,13 +365,13 @@ uint8_t* M_Receive(uint8_t frame[4])
 			{
 				my_printf("%d;", frame[i]);
 			}
-			my_printf("\n\r");
+			my_printf("\n\r\n");
 
-			my_printf("Packet number %d \r\n", currentstate.packet_received.packnum);
-			my_printf("Length %d \r\n",currentstate.packet_received.length);
+			/*my_printf("Packet number %d \r\n", currentstate.packet_received.packnum);
+			my_printf("Length %d \r\n",currentstate.packet_received.length);*/
 		}
 	  }
   }
-  BSP_DELAY_ms(1000);
+  //BSP_DELAY_ms(1000);
   return frame;
 }
