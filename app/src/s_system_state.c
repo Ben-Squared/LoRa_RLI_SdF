@@ -130,6 +130,10 @@ void S_System_State(void)
 		break;
 
 	case stateSendData:
+		for(uint8_t i = 0; i< 4; i++)
+		{
+			frameToSend[i] = 0;
+		}
 		Set_Data(dataToSend);
 		Frame_Format(BROADCAST_ADDRESS, frameSlaveData, frameToSend);
 		S_Transmit(frameToSend);
