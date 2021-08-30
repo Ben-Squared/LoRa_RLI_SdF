@@ -82,7 +82,7 @@ int main()
 	while(1)
 	{
 		curtime=BSP_millis();
-		if((curtime%100)==0)//send every 1000ms
+		if((curtime%50)==0)//send every 1000ms
 		{
 			//APP_SX1272_runTransmit();
 			//APP_SX1272_runReceive();

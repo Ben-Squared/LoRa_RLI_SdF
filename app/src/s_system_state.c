@@ -68,6 +68,7 @@ void S_System_State(void)
 		break;
 
 	case stateFrameDecode:
+		BSP_DELAY_ms(100);
 		my_printf("S decode \r\n");
 
 		decodedFrame = Frame_Decode(frameToReceive);
@@ -118,6 +119,10 @@ void S_System_State(void)
 		break;
 
 	case stateSendSlaveRequest:
+		for(uint8_t i = 0; i< 4; i++)
+		{
+			frameToSend[i] = 0;
+		}
 		Set_Data(dataRequest);
 		Frame_Format(MASTER_ADDRESS, frameSlaveRequest, frameToSend);
 		S_Transmit(frameToSend);
