@@ -18,15 +18,14 @@
 extern SX1272status currentstate;
 
 ///////////////////////////////////////////////////////////////
-// Dï¿½claration variables globales
+// Déclaration variables globales
 ///////////////////////////////////////////////////////////////
 static float waitPeriod = 0; //en ms
-static int cp = 0;  //compteur de paquets transmis
-static int type_modulation=TypeModulation;
+static uint8_t cp = 0;  //compteur de paquets transmis
+static uint8_t type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-char Tab[32];
 uint8_t EmptyTab[4] = {0};
 
 uint8_t myId = 0;
@@ -34,16 +33,14 @@ uint8_t totalStationNumber = 2;
 uint8_t stationNumber = 1;
 uint8_t frameToSend[4] = {0};
 uint8_t frameToReceive[4] = {0};
-//uint8_t frame[4] = {0};
 frameField decodedFrame;
-//uint8_t i =0;
 
 StateEnum mefState = stateInit;
 
 // status variables
 static int8_t e;
 static uint8_t ConfigOK = 1;
-static isBroadcatOrder =0;
+static uint8_t isBroadcatOrder =0;
 
 uint8_t Retry;
 
@@ -51,59 +48,25 @@ uint8_t Retry;
 // Main function
 ///////////////////////////////////////////////////////////////
 
-void M_system_state_main(char Tab[30])
-{
-
-//	enum {Station_1, Station_2, Station_3};
-//	char etat = Station_1;
-//	char Retour = "";
-
-
-	//M_Receive(Tab);
-
-	//while (1) {
-	/*switch (etat) {
-	case 0: 	M_Transmit("Station_1 est-tu la ?");
-				//Retour = M_Receive();
-				//if (Retour == "") etat = Station_2; break;
-				//BSP_DELAY_ms(100);
-				etat = Station_2; //break;
-
-	case 1: 	M_Transmit("Station_2 est-tu la ?");
-				//Retour = M_Receive();
-				//if (Retour == "") etat = Station_3; break;
-				//BSP_DELAY_ms(100);
-				etat = Station_3; //break;
-
-	case 2: 	M_Transmit("Station_3 est-tu la ?");
-				//Retour = M_Receive();
-				//if (Retour == "") etat = Station_1; break;
-				//BSP_DELAY_ms(100);
-				etat = Station_1; //break;
-		}*/
-	//}
-
-}
-
 void M_System_State(void)
 {
 	switch(mefState)
 	{
 		case stateInit:
-			//my_printf("M Init \r\n");
+			my_printf("M Init \r\n");
 			M_System_State_Setup();
 			mefState = stateIdle;
 			break;
 
 		case stateIdle:
 			// wait for periodic interrupt
-			//my_printf("M stateIdle \r\n");
+			my_printf("M stateIdle \r\n\n");
 
 			mefState = stateSendSlaveInquiry;
 			break;
 
 		case stateSendSlaveInquiry:
-			//my_printf("M Inquiry \r\n");
+			my_printf("M Inquiry \r\n");
 			// Clear the receive table before sending the new message
 
 			for(uint8_t i=0; i<4;i++)
@@ -120,20 +83,24 @@ void M_System_State(void)
 			break;
 
 		case stateWaitForResponse:
-			//my_printf("M wait for response \r\n");
+			my_printf("M wait for response \r\n");
 			// Receive the request answer
-			for(uint8_t i=0; i<4;i++)
-			{
-				frameToReceive[i] = 0;
+			if(isBroadcatOrder == 0){
+				for(uint8_t i=0; i<4;i++)
+				{
+					frameToReceive[i] = 0;
+				}
 			}
 
 			M_Receive(frameToReceive);
-
 			if (!(frameToReceive[0] == 0 && frameToReceive[1] == 0 && frameToReceive[2] == 0 && frameToReceive[3] == 0))
 			{
 				mefState = stateFrameDecode;
-				//mefState = stateOtherStationLeft; // for debug without frame[]
 				Retry = RETRY_RELOAD_VALUE;
+				if(isBroadcatOrder)
+				{
+					isBroadcatOrder = 0;
+				}
 			}
 			else if(Retry > 0)
 			{
@@ -141,16 +108,14 @@ void M_System_State(void)
 				if(isBroadcatOrder)
 				{
 					mefState = stateSendBroadcastOrder;
-					isBroadcatOrder = 0;
 				}
 				else
 					mefState = stateSendSlaveInquiry;
-
 			}
 			else
 			{
 
-				my_printf("Answer not received \n");
+				my_printf("Answer not received \r\n");
 				Retry = RETRY_RELOAD_VALUE;
 				mefState = stateOtherStationLeft;
 
@@ -159,7 +124,7 @@ void M_System_State(void)
 			break;
 
 		case stateFrameDecode:
-			//my_printf("M decode \r\n");
+			my_printf("M decode \r\n");
 
 			decodedFrame = Frame_Decode(frameToReceive);
 			/*my_printf("decoded frame id = %d \n\r", decodedFrame.idCalled);
@@ -177,14 +142,21 @@ void M_System_State(void)
 			break;
 
 		case stateSendBroadcastOrder:
-			Frame_Format(frameToReceive[2], frameBroadcastOrder, frameToSend); // after slaveRequest, frameToReceive[2] contains ID of station's required data
+			my_printf("M Broadcast \r\n");
+			// Remise à zéro
+			for(uint8_t i=0; i<4;i++)
+			{
+				frameToSend[i] = 0;
+			}
+			Frame_Format( frameToReceive[2], frameBroadcastOrder, frameToSend); // after slaveRequest, frameToReceive[2] contains ID of station's required data
 			M_Transmit(frameToSend);
+
 			isBroadcatOrder = 1;
 			mefState = stateWaitForResponse;
 			break;
 
 		case stateOtherStationLeft:
-			//my_printf("M station left \r\n");
+			my_printf("M station left \r\n");
 			if(stationNumber <= totalStationNumber)
 			{
 				if(stationNumber == totalStationNumber)
@@ -192,7 +164,7 @@ void M_System_State(void)
 				else
 					stationNumber++;
 				mefState = stateSendSlaveInquiry;
-				//my_printf("M station increment %d \r\n", stationNumber);
+				my_printf("M next station %d \r\n", stationNumber);
 			}
 
 			mefState = stateIdle;
