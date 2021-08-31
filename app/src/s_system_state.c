@@ -19,13 +19,10 @@ extern SX1272status currentstate;
 
 /************* Variables *************/
 static float waitPeriod = 0; //en ms
-static int cp = 0;  //compteur de paquets transmis
-static int type_modulation=TypeModulation;
+static uint8_t  cp = 0;  //compteur de paquets transmis
+static uint8_t  type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
-
-char Tab[30];
-uint8_t EmptyTab[4] = {0};
 
 StateEnum mefState;
 frameField decodedFrame;
@@ -234,7 +231,7 @@ void S_System_State_Setup(void)
 }
 
 //void M_Transmit(const char* Message)
-void S_Transmit(uint8_t frame[4]) // TODO : mettre un type à Message
+void S_Transmit(uint8_t frame[4])
 {
   uint8_t dest_address = TX_Addr;
 
@@ -243,7 +240,7 @@ void S_Transmit(uint8_t frame[4]) // TODO : mettre un type à Message
   if (ConfigOK == 1)
   {
 
-    e = BSP_SX1272_sendPacketTimeout(dest_address, frame, WaitTxMax);
+    e = BSP_SX1272_sendPacketTimeout(dest_address, (char *)frame, WaitTxMax);
 
     if (e == 0)
     {

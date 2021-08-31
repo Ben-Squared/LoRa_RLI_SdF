@@ -33,10 +33,18 @@ void S_System_State_Setup(void);
   */
 void S_System_State(void);
 
-// TODO : doxygen
+/**
+  * @brief  Finite State Machine handler
+  * @param  frame to send
+  * @retval None
+  */
 void S_Transmit(uint8_t frame[4]);
 
-// TODO : doxygen
+/**
+  * @brief  Finite State Machine handler
+  * @param  arraw who will contains the new frame received
+  * @retval the frame received
+  */
 uint8_t* S_Receive(uint8_t frame[4]);
 
 #endif /* APP_INC_S_SYSTEM_STATE_H_ */
