@@ -1,7 +1,7 @@
 /*
  * appSX1272.c
  *
- *  Created on: 25 août 2020
+ *  Created on: 25 aoï¿½t 2020
  *      Author: Arnaud
  */
 
@@ -15,21 +15,19 @@
 extern SX1272status currentstate;
 
 ///////////////////////////////////////////////////////////////
-// Déclaration variables globales
+// Dï¿½claration variables globales
 ///////////////////////////////////////////////////////////////
-
+/*
 static char LgMsg = 0;                      //longueur message
 static char Message[] = "Capteur 1 est chaud";   //message en char
 //static char Message[] = "Capteur 1 est tiede";
-//static char Message[] = "Capteur 1 est froid";
+//static char Message[] = "Capteur 1 est froid"; */
 
 static float waitPeriod = 0;                //en ms
-static int cp = 0;                          //compteur de paquets transmis
+//static int cp = 0;                          //compteur de paquets transmis
 static int type_modulation=TypeModulation;  //0: LORA, 1:FSK
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
-
-static int state_receive = 0;
 
 // status variables
 static int8_t e;
@@ -81,7 +79,7 @@ void APP_SX1272_setup()
   if (ConfigOK == 1)
   {
 	//////////////////////////////////////////////////////////////////////
-  //config supplémentaire mode LORA
+  //config supplï¿½mentaire mode LORA
 	//////////////////////////////////////////////////////////////////////
     if(type_modulation==0)
     {
@@ -101,7 +99,7 @@ void APP_SX1272_setup()
       currentstate._maxRetries = MaxNbRetries;
     }
 	//////////////////////////////////////////////////////////////////////
-	//config supplémentaire mode FSK
+	//config supplï¿½mentaire mode FSK
 	//////////////////////////////////////////////////////////////////////
     else
     {
@@ -138,6 +136,7 @@ void APP_SX1272_setup()
   BSP_DELAY_ms(1000);
 }
 
+/*
 void APP_SX1272_runTransmit() ////////////// IMPORTANT ///////////////
 {
   uint8_t dest_address = TX_Addr;
@@ -156,12 +155,12 @@ void APP_SX1272_runTransmit() ////////////// IMPORTANT ///////////////
     }
 
     if (e == 0)
-    {
+    { */
       /*my_printf("\n Packet number ");
       my_printf("%d",cp);
 	  my_printf(" ;Rx node address ");
 	  */
-	  my_printf("The following message as been transmitted", Message);
+/*	  my_printf("The following message as been transmitted", Message);
       cp++;
     }
     else
@@ -170,22 +169,23 @@ void APP_SX1272_runTransmit() ////////////// IMPORTANT ///////////////
     }
     BSP_DELAY_ms(waitPeriod); //delay to send packet every PeriodTransmission
   }
-}
+} */
 
+/*
 void APP_SX1272_runReceive() ///////////// IMPORTANT //////////////
 {
-  char StatusRXMessage='0';
+  char StatusRXMessage;
 
   // Receive packets continuously
   if (ConfigOK == 1)
   {
-	    //affichage entête
+	    //affichage entï¿½te
 	                             //statut (correct = 1 or bad = 0 or non received = 2)
 	  my_printf("\n \r\n");
 
     e = BSP_SX1272_receivePacketTimeout(WaitRxMax);
 
-    //paquet reçu, correct ou non
+    //paquet reï¿½u, correct ou non
     if (e == 0)
     {
       StatusRXMessage = '0';
@@ -211,7 +211,7 @@ void APP_SX1272_runReceive() ///////////// IMPORTANT //////////////
     {
       StatusRXMessage = '2';
     }
-    state_receive = 1;
+    state_receive = 1; */
 
     //////////////////////////////////////////////////////////////////////////////////
     // Plot receive packets in the serial monitor
@@ -224,7 +224,7 @@ void APP_SX1272_runReceive() ///////////// IMPORTANT //////////////
     my_printf("%d",currentstate.packet_received.length);
     my_printf(" ; ");
     */
-    for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
+ /*   for (uint8_t i =0; i < currentstate.packet_received.length-OFFSET_PAYLOADLENGTH; i++)
     {
       my_printf("%c",currentstate.packet_received.data[i]);
       //my_printf(" ");
@@ -246,4 +246,4 @@ void APP_SX1272_runReceive() ///////////// IMPORTANT //////////////
     }
   }
   //BSP_DELAY_ms(1000);
-}
+} */

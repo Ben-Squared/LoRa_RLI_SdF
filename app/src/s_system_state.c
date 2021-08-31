@@ -24,12 +24,12 @@ static uint8_t  type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-StateEnum mefState;
-frameField decodedFrame;
-uint8_t frameToSend[4] = {0};
-uint8_t frameToReceive[4] = {0};
-uint8_t dataRequest[2] = {1,0}; // data needed from station 1 only
-uint8_t dataToSend[2] = {5,5}; // data to be sent when Station sends data
+static StateEnum mefState;
+static frameField decodedFrame;
+static uint8_t frameToSend[4] = {0};
+static uint8_t frameToReceive[4] = {0};
+static uint8_t dataRequest[2] = {1,0}; // data needed from station 1 only
+static uint8_t dataToSend[2] = {5,5}; // data to be sent when Station sends data
 
 static uint8_t myId = 2; //id de la station (254 pour le maitre, de 1 a 253 pour les stations, 255 pour broadcast)
 

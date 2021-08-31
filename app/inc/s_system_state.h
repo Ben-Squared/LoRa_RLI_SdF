@@ -34,15 +34,15 @@ void S_System_State_Setup(void);
 void S_System_State(void);
 
 /**
-  * @brief  Finite State Machine handler
+  * @brief  Transmit function for slave
   * @param  frame to send
   * @retval None
   */
 void S_Transmit(uint8_t frame[4]);
 
 /**
-  * @brief  Finite State Machine handler
-  * @param  arraw who will contains the new frame received
+  * @brief  Receive function for slave
+  * @param  array who will contains the new frame received
   * @retval the frame received
   */
 uint8_t* S_Receive(uint8_t frame[4]);

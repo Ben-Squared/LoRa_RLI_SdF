@@ -45,7 +45,6 @@ typedef struct {
 	uint8_t idCalled; // id of expected receiver
 	frameTypeEnum frameType; // type of frame
 	uint16_t data;
-	// crc ?? mean of frame verif ??? To Be Determined
 } frameField;
 
 /**
@@ -61,16 +60,20 @@ uint8_t* Frame_Format(uint8_t idDest, frameTypeEnum frameType, uint8_t frame[32]
   * @param  frame to decode
   * @retval decoded frame
   */
-
 frameField Frame_Decode(uint8_t frameToDecode[32]);
 
 /**
   * @brief  function for verifying integrity of received frame. Must be called after Frame_Decode()
-  * @param  frame to verify
+  * @param  decoded frame to verify : frameField type
   * @retval 0 = frame OK 1 = frame NOK
   */
 uint8_t Frame_Verify(frameField frameToVerify);
 
+/**
+  * @brief  Function for setting data field (for slaveData
+  * @param  array which will contain data to set
+  * @retval None
+  */
 void Set_Data(uint8_t dataToSet[2]);
 
 #endif /* APP_INC_FRAME_H_ */
