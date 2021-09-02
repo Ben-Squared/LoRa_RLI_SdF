@@ -26,23 +26,20 @@ static uint8_t type_modulation=TypeModulation;
 static uint16_t RegBitRate = BitRate;
 static uint16_t RegFdev = Fdev;
 
-uint8_t EmptyTab[4] = {0};
+static uint8_t totalStationNumber = 2;
+static uint8_t stationNumber = 1;
+static uint8_t frameToSend[4] = {0};
+static uint8_t frameToReceive[4] = {0};
+static frameField decodedFrame;
 
-uint8_t myId = 0;
-uint8_t totalStationNumber = 2;
-uint8_t stationNumber = 1;
-uint8_t frameToSend[4] = {0};
-uint8_t frameToReceive[4] = {0};
-frameField decodedFrame;
-
-StateEnum mefState = stateInit;
+static StateEnum mefState = stateInit;
 
 // status variables
 static int8_t e;
 static uint8_t ConfigOK = 1;
 static uint8_t isBroadcatOrder =0;
 
-uint8_t Retry;
+static uint8_t Retry;
 
 ///////////////////////////////////////////////////////////////
 // Main function
